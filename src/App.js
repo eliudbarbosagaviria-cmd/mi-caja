@@ -52,14 +52,20 @@ const LOCALES = [
 ];
 
 const TIPOS_MOV = {
-  venta:    { label: "Ventas efectivo", emoji: "💵", signo: +1, grupo: "ingreso", color: "#4caf82" },
+  venta:    { label: "Venta efectivo", emoji: "💵", signo: +1, grupo: "ingreso", color: "#4caf82" },
+  venta_tarjeta: { label: "Venta tarjeta", emoji: "💳", signo: 0, grupo: "ingreso", color: "#7ac8f0" },
+  venta_bizum:   { label: "Venta Bizum",   emoji: "📱", signo: 0, grupo: "ingreso", color: "#a78bfa" },
+  venta_sumup:   { label: "Venta SumUp",   emoji: "🔵", signo: 0, grupo: "ingreso", color: "#f59e42" },
   deposito: { label: "Depósito",        emoji: "🏦", signo: +1, grupo: "ingreso", color: "#6ac8d8" },
   gasto:    { label: "Gasto",           emoji: "🧾", signo: -1, grupo: "egreso",  color: "#c0503a" },
   retiro:   { label: "Retiro",          emoji: "💸", signo: -1, grupo: "egreso",  color: "#d48a3a" },
 };
 
 const CATS = {
-  venta:    ["Ventas mostrador","Ventas delivery","Otros ingresos"],
+  venta:         ["Ventas mostrador","Ventas delivery","Otros ingresos"],
+  venta_tarjeta: ["Ventas mostrador","Ventas delivery","Otros ingresos"],
+  venta_bizum:   ["Ventas mostrador","Ventas delivery","Otros ingresos"],
+  venta_sumup:   ["Ventas mostrador","Ventas delivery","Otros ingresos"],
   deposito: ["Depósito bancario","Cobro cliente","Transferencia recibida"],
   gasto:    ["Proveedores","Salarios","Alquiler","Servicios","Transporte","Otros gastos"],
   retiro:   ["Retiro propietario","Pago anticipado","Otros retiros"],
@@ -149,13 +155,17 @@ function groupByWeek(days) {
 function calcDay(data) {
   const movs=data.movimientos||[];
   const ventas=movs.filter(m=>m.tipo==="venta").reduce((s,m)=>s+m.monto,0);
+  const ventas_tarjeta=movs.filter(m=>m.tipo==="venta_tarjeta").reduce((s,m)=>s+m.monto,0);
+  const ventas_bizum=movs.filter(m=>m.tipo==="venta_bizum").reduce((s,m)=>s+m.monto,0);
+  const ventas_sumup=movs.filter(m=>m.tipo==="venta_sumup").reduce((s,m)=>s+m.monto,0);
   const depositos=movs.filter(m=>m.tipo==="deposito").reduce((s,m)=>s+m.monto,0);
   const gastos=movs.filter(m=>m.tipo==="gasto").reduce((s,m)=>s+m.monto,0);
   const retiros=movs.filter(m=>m.tipo==="retiro").reduce((s,m)=>s+m.monto,0);
   const cajaTeor=(data.saldoInicial||0)+ventas+depositos-gastos-retiros;
   const cajaReal=data.cajaReal??null;
   const diferencia=cajaReal!==null?cajaReal-cajaTeor:null;
-  return { ventas, depositos, gastos, retiros, cajaTeor, cajaReal, diferencia };
+  const totalVentas=ventas+ventas_tarjeta+ventas_bizum+ventas_sumup;
+  return { ventas, ventas_tarjeta, ventas_bizum, ventas_sumup, totalVentas, depositos, gastos, retiros, cajaTeor, cajaReal, diferencia };
 }
 
 function exportarExcel() {
@@ -396,7 +406,7 @@ function ComparativaCards({s1,s2,n1,n2,c1,c2}) {
       {[[s1,n1,c1],[s2,n2,c2]].map(([s,n,c])=>(
         <div key={n} style={{background:"#0f0e0b",border:`1px solid ${c}33`,borderRadius:10,padding:12}}>
           <div style={{fontSize:10,color:c,marginBottom:8,fontWeight:"bold"}}>{n}</div>
-          {[["Ventas",s.ventas,"#4caf82"],["Depósitos",s.depositos,"#6ac8d8"],["Gastos",s.gastos,"#c0503a"],["Retiros",s.retiros,"#d48a3a"]].map(([l,v,col])=>(
+          {[["💵 Efectivo",s.ventas,"#4caf82"],["💳 Tarjeta",s.ventas_tarjeta,"#7ac8f0"],["📱 Bizum",s.ventas_bizum,"#a78bfa"],["🔵 SumUp",s.ventas_sumup,"#f59e42"],["Depósitos",s.depositos,"#6ac8d8"],["Gastos",s.gastos,"#c0503a"],["Retiros",s.retiros,"#d48a3a"]].map(([l,v,col])=>(
             <div key={l} style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
               <span style={{fontSize:10,color:"#5a5240"}}>{l}</span>
               <span style={{fontSize:10,color:col,fontWeight:"bold"}}>{formatCurrency(v)}</span>
@@ -423,7 +433,7 @@ function Informes() {
   const years=[]; for(let y=now.getFullYear();y>=now.getFullYear()-2;y--) years.push(y);
   function getKeysForMonth(localId,y,m){const ms=`${y}-${String(m).padStart(2,"0")}`;return getAllKeys(localId).filter(k=>k.startsWith(ms)).sort();}
   function getKeysForWeek(localId,y,wn){return getAllKeys(localId).filter(k=>k.startsWith(String(y))&&getWeekNumber(k)===wn).sort();}
-  function sumKeys(localId,keys){let ventas=0,depositos=0,gastos=0,retiros=0,descuadres=0;keys.forEach(dk=>{const d=loadDay(localId,dk);const c=calcDay(d);ventas+=c.ventas;depositos+=c.depositos;gastos+=c.gastos;retiros+=c.retiros;if(c.diferencia!==null&&c.diferencia!==0)descuadres++;});return{ventas,depositos,gastos,retiros,utilidad:ventas+depositos-gastos-retiros,descuadres,dias:keys.length};}
+  function sumKeys(localId,keys){let ventas=0,ventas_tarjeta=0,ventas_bizum=0,ventas_sumup=0,depositos=0,gastos=0,retiros=0,descuadres=0;keys.forEach(dk=>{const d=loadDay(localId,dk);const c=calcDay(d);ventas+=c.ventas;ventas_tarjeta+=c.ventas_tarjeta;ventas_bizum+=c.ventas_bizum;ventas_sumup+=c.ventas_sumup;depositos+=c.depositos;gastos+=c.gastos;retiros+=c.retiros;if(c.diferencia!==null&&c.diferencia!==0)descuadres++;});return{ventas,ventas_tarjeta,ventas_bizum,ventas_sumup,totalVentas:ventas+ventas_tarjeta+ventas_bizum+ventas_sumup,depositos,gastos,retiros,utilidad:ventas+ventas_tarjeta+ventas_bizum+ventas_sumup+depositos-gastos-retiros,descuadres,dias:keys.length};}
   const nombre1=localStorage.getItem("nombre_local1")||"Cornella";
   const nombre2=localStorage.getItem("nombre_local2")||"Badalona";
 
@@ -693,8 +703,17 @@ function CajaLocal({local}) {
           {dayData.cerrado&&<span style={{fontSize:10,color:accent}}>· Cerrada ✓</span>}
           <button onClick={()=>setShowResumen(true)} style={{marginLeft:"auto",background:"transparent",border:"1px solid #2e2b22",color:"#6a6047",padding:"3px 10px",borderRadius:20,fontSize:10,cursor:"pointer"}}>📄 Ver resumen</button>
         </div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6,marginBottom:12}}>
-          {[["Ventas",calc.ventas,"#4caf82"],["Depósitos",calc.depositos,"#6ac8d8"],["Gastos",calc.gastos,"#c0503a"],["Retiros",calc.retiros,"#d48a3a"]].map(([label,val,color])=>(
+        {/* Métricas ventas por método + gastos */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:6}}>
+          {[["💵 Efectivo",calc.ventas,"#4caf82"],["💳 Tarjeta",calc.ventas_tarjeta,"#7ac8f0"],["📱 Bizum",calc.ventas_bizum,"#a78bfa"],["🔵 SumUp",calc.ventas_sumup,"#f59e42"]].map(([label,val,color])=>(
+            <div key={label} style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+              <div style={{fontSize:8,letterSpacing:1,color:"#4a4335",textTransform:"uppercase",marginBottom:3}}>{label}</div>
+              <div style={{fontSize:11,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:12}}>
+          {[["Depósitos",calc.depositos,"#6ac8d8"],["Gastos",calc.gastos,"#c0503a"],["Retiros",calc.retiros,"#d48a3a"]].map(([label,val,color])=>(
             <div key={label} style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
               <div style={{fontSize:8,letterSpacing:1,color:"#4a4335",textTransform:"uppercase",marginBottom:3}}>{label}</div>
               <div style={{fontSize:11,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
@@ -723,11 +742,23 @@ function CajaLocal({local}) {
         {!isFuture&&!dayData.cerrado&&(
           <div style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:10,padding:14,marginBottom:12}}>
             {!isToday&&<div style={{fontSize:10,color:"#c9a84c",marginBottom:8}}>⚠ Registrando en día pasado: {formatDateShort(viewDate)}</div>}
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:5,marginBottom:10}}>
-              {Object.entries(TIPOS_MOV).map(([tipo,info])=>(
+            {/* Ventas por método de pago */}
+            <div style={{fontSize:9,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",marginBottom:6}}>Ventas</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:8}}>
+              {[["venta","💵 Efectivo","#4caf82"],["venta_tarjeta","💳 Tarjeta","#7ac8f0"],["venta_bizum","📱 Bizum","#a78bfa"],["venta_sumup","🔵 SumUp","#f59e42"]].map(([tipo,label,color])=>(
                 <button key={tipo} onClick={()=>setForm(f=>({...f,tipo,categoria:CATS[tipo][0]}))}
-                  style={{padding:"7px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?info.color:"#2e2b22"}`,background:form.tipo===tipo?info.color+"22":"transparent",color:form.tipo===tipo?info.color:"#5a5240",fontSize:10,cursor:"pointer",textAlign:"center"}}>
-                  {info.emoji}<br/><span style={{fontSize:9}}>{info.label.split(" ")[0]}</span>
+                  style={{padding:"7px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:"#2e2b22"}`,background:form.tipo===tipo?color+"22":"transparent",color:form.tipo===tipo?color:"#5a5240",fontSize:10,cursor:"pointer",textAlign:"center"}}>
+                  {label}
+                </button>
+              ))}
+            </div>
+            {/* Otros movimientos */}
+            <div style={{fontSize:9,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",marginBottom:6}}>Otros</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:5,marginBottom:10}}>
+              {[["deposito","🏦 Depósito","#6ac8d8"],["gasto","🧾 Gasto","#c0503a"],["retiro","💸 Retiro","#d48a3a"]].map(([tipo,label,color])=>(
+                <button key={tipo} onClick={()=>setForm(f=>({...f,tipo,categoria:CATS[tipo][0]}))}
+                  style={{padding:"7px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:"#2e2b22"}`,background:form.tipo===tipo?color+"22":"transparent",color:form.tipo===tipo?color:"#5a5240",fontSize:10,cursor:"pointer",textAlign:"center"}}>
+                  {label}
                 </button>
               ))}
             </div>
@@ -1053,7 +1084,6 @@ function CajaFuerte() {
   );
 }
 
-  export default function App() {
   const [mainTab,setMainTab]=useState("caja");
   const [user,setUser]=useState(null);
   const [checkingAuth,setCheckingAuth]=useState(true);
