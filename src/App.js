@@ -906,7 +906,7 @@ export default function App() {
             <div style={{fontSize:16,color:"#f0e8d0"}}>Mis Negocios</div>
           </div>
         </div>
-        <img src="/logo.png" alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
+        <img src={process.env.PUBLIC_URL + "/logo.png"} alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
           <div style={{fontSize:19,color:"#f0e8d0"}}>Mis Negocios</div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
