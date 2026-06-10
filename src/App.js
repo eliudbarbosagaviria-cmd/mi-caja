@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import * as XLSX from "xlsx";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "firebase/firestore";
+import { getFirestore, doc, setDoc, onSnapshot, collection } from "firebase/firestore";
 
 // ─────────────────────────────────────────────
 // FIREBASE CONFIG
@@ -723,7 +723,7 @@ function CajaLocal({local}) {
       });
     });
     return ()=>unsub();
-  },[local.id]);
+  },[local.id, viewDate]);
 
   function persist(updated){saveDay(local.id,viewDate,updated);setDayData(updated);}
   function showFlash(msg){setFlash(msg);setTimeout(()=>setFlash(""),2000);}
