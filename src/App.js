@@ -445,7 +445,7 @@ function Informes() {
           <input type="date" value={fecha} max={today} onChange={e=>setFecha(e.target.value)} style={{...inp,fontSize:12}}/>
           <span style={{fontSize:10,color:"#6a6047"}}>Sem. {getWeekNumber(fecha)}</span>
         </div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:2}}>
           {LOCALES.map(local=>{
             const nombre=localStorage.getItem(`nombre_${local.id}`)||local.nombre;
             const d=loadDay(local.id,fecha); const c=calcDay(d);
@@ -696,7 +696,7 @@ function CajaLocal({local}) {
           </button>
         ))}
       </div>
-      <div style={{padding:14}}>
+      <div style={{padding:10}}>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,flexWrap:"wrap"}}>
           <span style={{background:accent+"22",border:`1px solid ${accent}44`,color:accent,borderRadius:20,padding:"3px 10px",fontSize:10,letterSpacing:1,fontWeight:"bold"}}>Semana {semana}</span>
           <span style={{fontSize:11,color:"#5a5240"}}>{formatDateShort(viewDate)}{isToday?" · Hoy":""}</span>
@@ -831,7 +831,7 @@ function ResumenConsolidado() {
   const totalUtil=totales.reduce((s,t)=>s+t.calc.cajaTeor,0)-(loadDay("local1",today).saldoInicial||0)-(loadDay("local2",today).saldoInicial||0);
   const hayAlerta=totales.some(t=>t.calc.diferencia!==null&&t.calc.diferencia!==0);
   return(
-    <div style={{background:"#1a1710",border:`1px solid ${hayAlerta?"#5c2a2a":"#3a3520"}`,borderRadius:14,padding:"14px 18px",marginBottom:16}}>
+    <div style={{background:"#1a1710",border:`1px solid ${hayAlerta?"#5c2a2a":"#3a3520"}`,borderRadius:14,padding:"10px 14px",marginBottom:8}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
         <div style={{fontSize:10,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Consolidado Hoy</div>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
@@ -1279,11 +1279,11 @@ export default function App() {
           </button>
         ))}
       </div>
-      <div style={{maxWidth:820,margin:"0 auto",padding:"18px 12px"}}>
+      <div style={{maxWidth:820,margin:"0 auto",padding:"10px 8px"}}>
         {mainTab==="dashboard"&&<Dashboard/>}
         {mainTab==="caja"&&<>
           <ResumenConsolidado/>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
             {LOCALES.map(local=><CajaLocal key={local.id} local={local}/>)}
           </div>
         </>}
