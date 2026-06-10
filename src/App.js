@@ -27,7 +27,7 @@ const CATS = {
 
 const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 const DIAS_CORTOS = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
-const UMBRAL_DESCUADRE = 0; // Si diferencia ≠ 0 hay alerta
+
 
 // ─────────────────────────────────────────────
 // HELPERS
@@ -483,10 +483,6 @@ function Informes() {
     const s1=sumKeys("local1",keys1);
     const s2=sumKeys("local2",keys2);
 
-    const chartData=["local1","local2"].flatMap(lid=>{
-      const keys=lid==="local1"?keys1:keys2;
-      return keys.map(dk=>{const d=loadDay(lid,dk);const c=calcDay(d);return{dia:formatDateShort(dk),[`${lid==="local1"?nombre1:nombre2} Ventas`]:c.ventas,[`${lid==="local1"?nombre1:nombre2} Gastos`]:c.gastos};});
-    });
     const dias=[...new Set([...keys1,...keys2])].sort().map(dk=>{
       const c1=calcDay(loadDay("local1",dk));const c2=calcDay(loadDay("local2",dk));
       return{dia:formatDateShort(dk),[`${nombre1}`]:c1.ventas+c1.depositos,[`${nombre2}`]:c2.ventas+c2.depositos};
@@ -861,8 +857,6 @@ function ResumenConsolidado() {
     const d=loadDay(local.id,today); const c=calcDay(d);
     return{local,calc:c,nombre:localStorage.getItem(`nombre_${local.id}`)||local.nombre};
   });
-  const totalVentas=totales.reduce((s,t)=>s+t.calc.ventas,0);
-  const totalGastos=totales.reduce((s,t)=>s+t.calc.gastos,0);
   const totalUtil=totales.reduce((s,t)=>s+t.calc.cajaTeor,0)-(loadDay("local1",today).saldoInicial||0)-(loadDay("local2",today).saldoInicial||0);
   const hayAlerta=totales.some(t=>t.calc.diferencia!==null&&t.calc.diferencia!==0);
 
