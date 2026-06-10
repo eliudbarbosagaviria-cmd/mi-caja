@@ -903,6 +903,10 @@ export default function App() {
       <div style={{background:"#1a1710",borderBottom:"1px solid #2e2b22",padding:"13px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div>
           <div style={{fontSize:9,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Libro de Caja</div>
+            <div style={{fontSize:16,color:"#f0e8d0"}}>Mis Negocios</div>
+          </div>
+        </div>
+        <img src="/logo.png" alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
           <div style={{fontSize:19,color:"#f0e8d0"}}>Mis Negocios</div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
