@@ -1,6 +1,22 @@
 import { useState, useEffect, useRef } from "react";
 import * as XLSX from "xlsx";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "firebase/firestore";
+
+// ─────────────────────────────────────────────
+// FIREBASE CONFIG
+// ─────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyC2ud4qdn7Hen_43QA0GYfUuSz8VKeuvf8",
+  authDomain: "mi-caja-5c112.firebaseapp.com",
+  projectId: "mi-caja-5c112",
+  storageBucket: "mi-caja-5c112.firebasestorage.app",
+  messagingSenderId: "1063156228088",
+  appId: "1:1063156228088:web:edbd2d52e17fa3b273000d"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
 
 // ─────────────────────────────────────────────
 // CONSTANTES
@@ -59,23 +75,51 @@ function formatDateShort(dateStr) {
   return `${DIAS_CORTOS[date.getDay()]} ${d}/${m}`;
 }
 
-function skDay(localId,dateKey) { return `caja_${localId}_${dateKey}`; }
-
 function emptyDay() {
   return { saldoInicial:0, cajaReal:null, movimientos:[], cerrado:false, nota:"" };
 }
 
-function loadDay(localId,dateKey) {
-  try { const r=localStorage.getItem(skDay(localId,dateKey)); if(r) return JSON.parse(r); } catch{}
+// Cache local para rendimiento
+const _cache = {};
+
+function loadDay(localId, dateKey) {
+  const key = `${localId}_${dateKey}`;
+  if (_cache[key]) return _cache[key];
+  try { const r=localStorage.getItem(`caja_${key}`); if(r){ _cache[key]=JSON.parse(r); return _cache[key]; } } catch{}
   return emptyDay();
 }
-function saveDay(localId,dateKey,data) {
-  try { localStorage.setItem(skDay(localId,dateKey),JSON.stringify(data)); } catch{}
+
+async function saveDay(localId, dateKey, data) {
+  const key = `${localId}_${dateKey}`;
+  _cache[key] = data;
+  // Guardar en localStorage como caché
+  try { localStorage.setItem(`caja_${key}`, JSON.stringify(data)); } catch{}
+  // Guardar en Firebase
+  try {
+    await setDoc(doc(db, "cajas", `${localId}_${dateKey}`), { localId, dateKey, ...data });
+  } catch(e) { console.error("Firebase save error:", e); }
 }
+
 function getAllKeys(localId) {
   const prefix=`caja_${localId}_`, keys=[];
   for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(k&&k.startsWith(prefix)) keys.push(k.replace(prefix,""));}
   return keys.sort().reverse();
+}
+
+// Sincronizar desde Firebase al localStorage
+async function syncFromFirebase(localId) {
+  try {
+    const { getDocs, query, where } = await import("firebase/firestore");
+    const q = query(collection(db, "cajas"), where("localId", "==", localId));
+    const snap = await getDocs(q);
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      const { localId: lid, dateKey, ...dayData } = data;
+      const key = `caja_${lid}_${dateKey}`;
+      localStorage.setItem(key, JSON.stringify(dayData));
+      _cache[`${lid}_${dateKey}`] = dayData;
+    });
+  } catch(e) { console.error("Firebase sync error:", e); }
 }
 function getDaysInMonth(year,month) {
   const days=[],total=new Date(year,month,0).getDate();
@@ -658,6 +702,29 @@ function CajaLocal({local}) {
 
   useEffect(()=>{const d=loadDay(local.id,viewDate);setDayData(d);setNota(d.nota||"");},[viewDate,local.id]);
 
+  // Sincronizar con Firebase al cargar
+  useEffect(()=>{
+    syncFromFirebase(local.id).then(()=>{
+      const d=loadDay(local.id,viewDate);
+      setDayData(d);
+    });
+    // Escuchar cambios en tiempo real
+    const unsub = onSnapshot(collection(db,"cajas"), (snap)=>{
+      snap.docChanges().forEach(change=>{
+        if(change.type==="modified"||change.type==="added"){
+          const data=change.doc.data();
+          if(data.localId===local.id){
+            const {localId:lid,dateKey,...dayData}=data;
+            localStorage.setItem(`caja_${lid}_${dateKey}`,JSON.stringify(dayData));
+            _cache[`${lid}_${dateKey}`]=dayData;
+            if(dateKey===viewDate) setDayData({...dayData});
+          }
+        }
+      });
+    });
+    return ()=>unsub();
+  },[local.id]);
+
   function persist(updated){saveDay(local.id,viewDate,updated);setDayData(updated);}
   function showFlash(msg){setFlash(msg);setTimeout(()=>setFlash(""),2000);}
 
@@ -902,7 +969,7 @@ export default function App() {
     <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#0f0e0b",color:"#e8e0cc",padding:"0 0 60px"}}>
       <div style={{background:"#1a1710",borderBottom:"1px solid #2e2b22",padding:"10px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <img src={require("./logo.png")} alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
+          <img src="/logo.png" alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
           <div>
             <div style={{fontSize:9,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Libro de Caja</div>
             <div style={{fontSize:16,color:"#f0e8d0"}}>Mis Negocios</div>
