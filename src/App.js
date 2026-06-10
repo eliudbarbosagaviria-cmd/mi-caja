@@ -5,6 +5,35 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, onSnapshot, collection } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 
+// ─────────────────────────────────────────────
+// EMAILJS - NOTIFICACIONES DE DESCUADRE
+// ─────────────────────────────────────────────
+const EMAILJS_SERVICE_ID = "service_x8tw5it";
+const EMAILJS_TEMPLATE_ID = "template_axn1jva";
+const EMAILJS_PUBLIC_KEY = "Gbxg_tyXS_zgOgq23";
+
+async function enviarAlertaDescuadre(localNombre, dateKey, cajaTeor, cajaReal, diferencia) {
+  try {
+    const { default: emailjs } = await import("@emailjs/browser");
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID,
+      {
+        local: localNombre,
+        fecha: formatDate(dateKey),
+        semana: `Semana ${getWeekNumber(dateKey)}`,
+        caja_teorica: formatCurrency(cajaTeor),
+        caja_real: formatCurrency(cajaReal),
+        diferencia: `${diferencia > 0 ? "+" : ""}${formatCurrency(diferencia)}`,
+      },
+      EMAILJS_PUBLIC_KEY
+    );
+    console.log("Alerta de descuadre enviada");
+  } catch(e) {
+    console.error("Error enviando alerta:", e);
+  }
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyC2ud4qdn7Hen_43QA0GYfUuSz8VKeuvf8",
   authDomain: "mi-caja-5c112.firebaseapp.com",
@@ -612,7 +641,18 @@ function CajaLocal({local}) {
 
   function deleteMovimiento(id){persist({...dayData,movimientos:dayData.movimientos.filter(m=>m.id!==id)});}
   function guardarSaldo(){const v=parseFloat(saldoInput);if(!isNaN(v))persist({...dayData,saldoInicial:v});setEditSaldo(false);}
-  function cerrarCaja(){persist({...dayData,cerrado:true,nota,horaCierre:new Date().toLocaleTimeString("es-ES")});setShowCierre(false);showFlash("✓ Caja cerrada");}
+  function cerrarCaja(){
+    const updated={...dayData,cerrado:true,nota,horaCierre:new Date().toLocaleTimeString("es-ES")};
+    persist(updated);
+    setShowCierre(false);
+    showFlash("✓ Caja cerrada");
+    // Enviar alerta si hay descuadre
+    const c=calcDay(updated);
+    if(c.diferencia!==null&&c.diferencia!==0){
+      const nombre=localStorage.getItem(`nombre_${local.id}`)||local.nombre;
+      enviarAlertaDescuadre(nombre,viewDate,c.cajaTeor,c.cajaReal,c.diferencia);
+    }
+  }
 
   const calc=calcDay(dayData);
   const isToday=viewDate===today;
