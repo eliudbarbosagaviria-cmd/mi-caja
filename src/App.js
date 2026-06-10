@@ -1053,6 +1053,7 @@ function CajaFuerte() {
   );
 }
 
+  export default function App() {
   const [mainTab,setMainTab]=useState("caja");
   const [user,setUser]=useState(null);
   const [checkingAuth,setCheckingAuth]=useState(true);
