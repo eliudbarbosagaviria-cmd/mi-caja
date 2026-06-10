@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, onSnapshot, collection } from "firebase/firestore";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 
 // ─────────────────────────────────────────────
 // FIREBASE CONFIG
@@ -17,6 +18,7 @@ const firebaseConfig = {
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
 
 // ─────────────────────────────────────────────
 // CONSTANTES
@@ -723,7 +725,7 @@ function CajaLocal({local}) {
       });
     });
     return ()=>unsub();
-  },[local.id, viewDate]);
+  },[local.id]);
 
   function persist(updated){saveDay(local.id,viewDate,updated);setDayData(updated);}
   function showFlash(msg){setFlash(msg);setTimeout(()=>setFlash(""),2000);}
@@ -961,23 +963,98 @@ function ResumenConsolidado() {
 }
 
 // ─────────────────────────────────────────────
+// PANTALLA DE LOGIN
+// ─────────────────────────────────────────────
+function LoginScreen({onLogin}) {
+  const [email,setEmail]=useState("");
+  const [password,setPassword]=useState("");
+  const [error,setError]=useState("");
+  const [loading,setLoading]=useState(false);
+
+  async function handleLogin() {
+    if(!email||!password) return;
+    setLoading(true); setError("");
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      onLogin();
+    } catch(e) {
+      setError("Email o contraseña incorrectos");
+    }
+    setLoading(false);
+  }
+
+  return(
+    <div style={{minHeight:"100vh",background:"#0f0e0b",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif"}}>
+      <div style={{background:"#1a1710",border:"1px solid #3a3520",borderRadius:16,padding:32,width:320,maxWidth:"90vw"}}>
+        <div style={{textAlign:"center",marginBottom:24}}>
+          <img src={require("./logo.png")} alt="Logo" style={{height:60,borderRadius:8,objectFit:"contain",marginBottom:12}}/>
+          <div style={{fontSize:10,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Libro de Caja</div>
+          <div style={{fontSize:18,color:"#f0e8d0",marginTop:2}}>Entre Pues</div>
+        </div>
+
+        <div style={{marginBottom:10}}>
+          <div style={{fontSize:10,color:"#6a6047",marginBottom:4,letterSpacing:1}}>EMAIL</div>
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
+            placeholder="tu@email.com"
+            style={{...inp,width:"100%",boxSizing:"border-box"}}/>
+        </div>
+
+        <div style={{marginBottom:16}}>
+          <div style={{fontSize:10,color:"#6a6047",marginBottom:4,letterSpacing:1}}>CONTRASEÑA</div>
+          <input type="password" value={password} onChange={e=>setPassword(e.target.value)}
+            placeholder="••••••••"
+            onKeyDown={e=>e.key==="Enter"&&handleLogin()}
+            style={{...inp,width:"100%",boxSizing:"border-box"}}/>
+        </div>
+
+        {error&&<div style={{fontSize:11,color:"#c0503a",marginBottom:12,textAlign:"center"}}>{error}</div>}
+
+        <button onClick={handleLogin} disabled={loading}
+          style={{width:"100%",background:"#c9a84c",border:"none",color:"#0f0e0b",padding:"12px 0",borderRadius:8,fontSize:13,fontWeight:"bold",cursor:"pointer",fontFamily:"Georgia,serif"}}>
+          {loading?"Entrando...":"Entrar"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
 // APP PRINCIPAL
 // ─────────────────────────────────────────────
 export default function App() {
   const [mainTab,setMainTab]=useState("caja");
+  const [user,setUser]=useState(null);
+  const [checkingAuth,setCheckingAuth]=useState(true);
+
+  useEffect(()=>{
+    const unsub=onAuthStateChanged(auth,(u)=>{
+      setUser(u);
+      setCheckingAuth(false);
+    });
+    return()=>unsub();
+  },[]);
+
+  if(checkingAuth) return(
+    <div style={{minHeight:"100vh",background:"#0f0e0b",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div style={{color:"#6a6047",fontFamily:"Georgia,serif",fontSize:13,letterSpacing:2}}>Cargando...</div>
+    </div>
+  );
+
+  if(!user) return <LoginScreen onLogin={()=>{}}/>;
+
   return(
     <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#0f0e0b",color:"#e8e0cc",padding:"0 0 60px"}}>
       <div style={{background:"#1a1710",borderBottom:"1px solid #2e2b22",padding:"10px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <img src="/logo.png" alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
+          <img src={require("./logo.png")} alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
           <div>
-            <div style={{fontSize:9,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Libro de Caja Entre Pues</div>
+            <div style={{fontSize:9,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Libro de Caja</div>
             <div style={{fontSize:16,color:"#f0e8d0"}}>Entre Pues</div>
-            <div style={{fontSize:16,color:"#f0e8d0"}}></div>
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <button onClick={exportarExcel} style={{background:"#1e3a1e",border:"1px solid #2a5c2a",color:"#4caf82",padding:"6px 12px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>📊 Excel</button>
+          <button onClick={()=>signOut(auth)} style={{background:"transparent",border:"1px solid #3a3520",color:"#6a6047",padding:"6px 10px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>Salir</button>
           <div style={{fontSize:10,color:"#6a6047"}}>{new Date().toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}</div>
         </div>
       </div>
