@@ -1084,8 +1084,165 @@ function CajaFuerte() {
   );
 }
 
+// ─────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────
+function Dashboard() {
+  const today = getDateKey();
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const weekNum = getWeekNumber(today);
+
+  // Ayer
+  const yesterday = new Date(now); yesterday.setDate(yesterday.getDate()-1);
+  const yesterdayKey = getDateKey(yesterday);
+
+  // Datos de hoy por local
+  const datosHoy = LOCALES.map(local => {
+    const nombre = localStorage.getItem(`nombre_${local.id}`) || local.nombre;
+    const c = calcDay(loadDay(local.id, today));
+    const cy = calcDay(loadDay(local.id, yesterdayKey));
+    return { local, nombre, c, cy };
+  });
+
+  const totalHoyVentas = datosHoy.reduce((s,d)=>s+d.c.totalVentas,0);
+  const totalAyerVentas = datosHoy.reduce((s,d)=>s+d.cy.totalVentas,0);
+  const difAyer = totalHoyVentas - totalAyerVentas;
+
+  // Datos semana (últimos 7 días)
+  const diasSemana = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(now); d.setDate(d.getDate()-i);
+    const dk = getDateKey(d);
+    const c1 = calcDay(loadDay("local1",dk));
+    const c2 = calcDay(loadDay("local2",dk));
+    diasSemana.push({
+      dia: DIAS_CORTOS[d.getDay()],
+      fecha: dk,
+      local1: c1.totalVentas,
+      local2: c2.totalVentas,
+      total: c1.totalVentas + c2.totalVentas,
+      esHoy: dk === today,
+    });
+  }
+
+  // Datos mes
+  const { totalIng: ingL1 } = (() => {
+    const ms = `${year}-${String(month).padStart(2,"0")}`;
+    const keys = getAllKeys("local1").filter(k=>k.startsWith(ms));
+    const total = keys.reduce((s,dk)=>s+calcDay(loadDay("local1",dk)).totalVentas,0);
+    return { totalIng: total };
+  })();
+  const { totalIng: ingL2 } = (() => {
+    const ms = `${year}-${String(month).padStart(2,"0")}`;
+    const keys = getAllKeys("local2").filter(k=>k.startsWith(ms));
+    const total = keys.reduce((s,dk)=>s+calcDay(loadDay("local2",dk)).totalVentas,0);
+    return { totalIng: total };
+  })();
+
+  const nombre1 = localStorage.getItem("nombre_local1") || "Cornella";
+  const nombre2 = localStorage.getItem("nombre_local2") || "Badalona";
+  const maxSemana = Math.max(...diasSemana.map(d=>d.total), 1);
+
+  return(
+    <div style={{maxWidth:820,margin:"0 auto",padding:"18px 12px"}}>
+
+      {/* Bienvenida */}
+      <div style={{marginBottom:20}}>
+        <div style={{fontSize:11,color:"#6a6047",letterSpacing:2,textTransform:"uppercase"}}>Buenos días</div>
+        <div style={{fontSize:22,color:"#f0e8d0",fontWeight:"normal"}}>{formatDate(today).split(",")[0].charAt(0).toUpperCase()+formatDate(today).split(",")[0].slice(1)}, {today.split("-")[2]} de {MESES[month-1]}</div>
+        <div style={{fontSize:11,color:"#6a6047"}}>Semana {weekNum}</div>
+      </div>
+
+      {/* Tarjetas resumen hoy */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
+        {datosHoy.map(({local,nombre,c,cy})=>{
+          const dif = c.totalVentas - cy.totalVentas;
+          return(
+            <div key={local.id} style={{background:"#141210",border:`1px solid ${local.color}33`,borderRadius:14,padding:16}}>
+              <div style={{fontSize:10,color:local.color,letterSpacing:1,marginBottom:8,fontWeight:"bold"}}>{local.emoji} {nombre}</div>
+              <div style={{fontSize:24,color:"#f0e8d0",fontWeight:"bold",marginBottom:4}}>{formatCurrency(c.totalVentas)}</div>
+              <div style={{fontSize:10,color:"#5a5240",marginBottom:8}}>Ventas hoy</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:8}}>
+                {[["💵",c.ventas,"#4caf82"],["💳",c.ventas_tarjeta,"#7ac8f0"],["📱",c.ventas_bizum,"#a78bfa"],["🔵",c.ventas_sumup,"#f59e42"]].map(([emoji,val,color])=>(
+                  <div key={emoji} style={{textAlign:"center",background:"#0f0e0b",borderRadius:6,padding:"5px 4px"}}>
+                    <div style={{fontSize:12}}>{emoji}</div>
+                    <div style={{fontSize:10,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{fontSize:10,color:dif>=0?"#4caf82":"#c0503a"}}>
+                {dif>=0?"▲":"▼"} {formatCurrency(Math.abs(dif))} vs ayer
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Total consolidado hoy */}
+      <div style={{background:"#1a1710",border:"1px solid #3a3520",borderRadius:14,padding:"14px 18px",marginBottom:20}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+          <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase"}}>Total Ambos Locales · Hoy</div>
+          <div style={{fontSize:10,color:difAyer>=0?"#4caf82":"#c0503a"}}>
+            {difAyer>=0?"▲":"▼"} {formatCurrency(Math.abs(difAyer))} vs ayer
+          </div>
+        </div>
+        <div style={{fontSize:28,color:"#c9a84c",fontWeight:"bold",marginBottom:4}}>{formatCurrency(totalHoyVentas)}</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:8,marginTop:10}}>
+          {[["💵 Efectivo",datosHoy.reduce((s,d)=>s+d.c.ventas,0),"#4caf82"],
+            ["💳 Tarjeta",datosHoy.reduce((s,d)=>s+d.c.ventas_tarjeta,0),"#7ac8f0"],
+            ["📱 Bizum",datosHoy.reduce((s,d)=>s+d.c.ventas_bizum,0),"#a78bfa"],
+            ["🔵 SumUp",datosHoy.reduce((s,d)=>s+d.c.ventas_sumup,0),"#f59e42"]
+          ].map(([label,val,color])=>(
+            <div key={label} style={{textAlign:"center"}}>
+              <div style={{fontSize:9,color:"#5a5240",marginBottom:3}}>{label}</div>
+              <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Gráfica semana */}
+      <div style={{background:"#141210",border:"1px solid #2e2b22",borderRadius:14,padding:16,marginBottom:20}}>
+        <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase",marginBottom:14}}>Ventas últimos 7 días</div>
+        <div style={{display:"flex",alignItems:"flex-end",gap:6,height:100}}>
+          {diasSemana.map((d,i)=>(
+            <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+              <div style={{fontSize:9,color:d.esHoy?"#c9a84c":"#5a5240"}}>{formatCurrencyShort(d.total)}</div>
+              <div style={{width:"100%",display:"flex",flexDirection:"column",gap:1,flex:1,justifyContent:"flex-end"}}>
+                <div style={{width:"100%",background:"#6a9fd8",borderRadius:"3px 3px 0 0",height:`${(d.local2/maxSemana)*60}px`,minHeight:d.local2>0?3:0}}/>
+                <div style={{width:"100%",background:"#c9a84c",borderRadius:d.local2>0?"0":"3px 3px 0 0",height:`${(d.local1/maxSemana)*60}px`,minHeight:d.local1>0?3:0}}/>
+              </div>
+              <div style={{fontSize:9,color:d.esHoy?"#c9a84c":"#5a5240",fontWeight:d.esHoy?"bold":"normal"}}>{d.dia}</div>
+              {d.esHoy&&<div style={{width:4,height:4,borderRadius:"50%",background:"#c9a84c"}}/>}
+            </div>
+          ))}
+        </div>
+        <div style={{display:"flex",gap:16,marginTop:10,justifyContent:"center"}}>
+          <div style={{display:"flex",alignItems:"center",gap:4}}><div style={{width:10,height:10,background:"#c9a84c",borderRadius:2}}/><span style={{fontSize:10,color:"#8a7f5e"}}>{nombre1}</span></div>
+          <div style={{display:"flex",alignItems:"center",gap:4}}><div style={{width:10,height:10,background:"#6a9fd8",borderRadius:2}}/><span style={{fontSize:10,color:"#8a7f5e"}}>{nombre2}</span></div>
+        </div>
+      </div>
+
+      {/* Mes actual */}
+      <div style={{background:"#141210",border:"1px solid #2e2b22",borderRadius:14,padding:16}}>
+        <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase",marginBottom:12}}>{MESES[month-1]} {year} · Acumulado</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
+          {[[nombre1,ingL1,"#c9a84c"],[nombre2,ingL2,"#6a9fd8"],["Total",ingL1+ingL2,"#f0e8d0"]].map(([nombre,val,color])=>(
+            <div key={nombre} style={{textAlign:"center"}}>
+              <div style={{fontSize:9,color:"#5a5240",marginBottom:4}}>{nombre}</div>
+              <div style={{fontSize:15,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
-  const [mainTab,setMainTab]=useState("caja");
+  const [mainTab,setMainTab]=useState("dashboard");
   const [user,setUser]=useState(null);
   const [checkingAuth,setCheckingAuth]=useState(true);
   useEffect(()=>{
@@ -1115,14 +1272,15 @@ export default function App() {
         </div>
       </div>
       <div style={{display:"flex",borderBottom:"1px solid #2e2b22",background:"#141210"}}>
-        {[["caja","💼 Caja"],["fuerte","🔒 Caja Fuerte"],["informes","📋 Informes"]].map(([k,label])=>(
+        {[["dashboard","🏠 Inicio"],["caja","💼 Caja"],["fuerte","🔒 Fuerte"],["informes","📋 Informes"]].map(([k,label])=>(
           <button key={k} onClick={()=>setMainTab(k)}
-            style={{flex:1,padding:"11px 0",background:"transparent",border:"none",borderBottom:mainTab===k?"2px solid #c9a84c":"2px solid transparent",color:mainTab===k?"#c9a84c":"#6a6047",fontSize:11,cursor:"pointer",letterSpacing:1}}>
+            style={{flex:1,padding:"11px 0",background:"transparent",border:"none",borderBottom:mainTab===k?"2px solid #c9a84c":"2px solid transparent",color:mainTab===k?"#c9a84c":"#6a6047",fontSize:10,cursor:"pointer",letterSpacing:1}}>
             {label}
           </button>
         ))}
       </div>
       <div style={{maxWidth:820,margin:"0 auto",padding:"18px 12px"}}>
+        {mainTab==="dashboard"&&<Dashboard/>}
         {mainTab==="caja"&&<>
           <ResumenConsolidado/>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
