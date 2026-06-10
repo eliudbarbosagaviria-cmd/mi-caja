@@ -900,14 +900,13 @@ export default function App() {
   const [mainTab,setMainTab]=useState("caja");
   return(
     <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#0f0e0b",color:"#e8e0cc",padding:"0 0 60px"}}>
-      <div style={{background:"#1a1710",borderBottom:"1px solid #2e2b22",padding:"13px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div>
-          <div style={{fontSize:9,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Libro de Caja</div>
+      <div style={{background:"#1a1710",borderBottom:"1px solid #2e2b22",padding:"10px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <img src={require("./logo.png")} alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
+          <div>
+            <div style={{fontSize:9,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Libro de Caja</div>
             <div style={{fontSize:16,color:"#f0e8d0"}}>Mis Negocios</div>
           </div>
-        </div>
-        <img src={require("./logo.png")} alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
-          <div style={{fontSize:19,color:"#f0e8d0"}}>Mis Negocios</div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <button onClick={exportarExcel} style={{background:"#1e3a1e",border:"1px solid #2a5c2a",color:"#4caf82",padding:"6px 12px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>📊 Excel</button>
