@@ -869,7 +869,190 @@ function LoginScreen() {
   );
 }
 
-export default function App() {
+// ─────────────────────────────────────────────
+// CAJA FUERTE
+// ─────────────────────────────────────────────
+function CajaFuerte() {
+  const MOTIVOS_SALIDA = ["Pago a proveedor","Pago de nómina","Retiro propietario","Gastos operativos","Depósito bancario","Otro motivo"];
+  const [movimientos, setMovimientos] = useState([]);
+  const [saldoInicial, setSaldoInicial] = useState(0);
+  const [form, setForm] = useState({ tipo: "entrada", origen: "local1", motivo: "Pago a proveedor", descripcion: "", monto: "" });
+  const [editSaldo, setEditSaldo] = useState(false);
+  const [saldoInput, setSaldoInput] = useState("");
+  const [flash, setFlash] = useState("");
+  const inputRef = useRef();
+
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, "cajaFuerte", "datos"), (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        setMovimientos(data.movimientos || []);
+        setSaldoInicial(data.saldoInicial || 0);
+      }
+    });
+    return () => unsub();
+  }, []);
+
+  async function persist(newMovs, newSaldoInicial) {
+    await setDoc(doc(db, "cajaFuerte", "datos"), {
+      movimientos: newMovs,
+      saldoInicial: newSaldoInicial ?? saldoInicial
+    });
+  }
+
+  function showFlash(msg) { setFlash(msg); setTimeout(() => setFlash(""), 2000); }
+
+  function agregarMovimiento() {
+    if (!form.monto || isNaN(+form.monto) || +form.monto <= 0) return;
+    const nombre = localStorage.getItem(`nombre_${form.origen}`) || (form.origen === "local1" ? "Cornella" : "Badalona");
+    const nuevo = {
+      id: Date.now(),
+      tipo: form.tipo,
+      origen: form.origen,
+      nombreOrigen: nombre,
+      motivo: form.tipo === "salida" ? form.motivo : "",
+      descripcion: form.descripcion.trim() || (form.tipo === "entrada" ? `Depósito de ${nombre}` : form.motivo),
+      monto: +form.monto,
+      fecha: getDateKey(),
+      hora: new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })
+    };
+    const nuevos = [...movimientos, nuevo];
+    persist(nuevos, saldoInicial);
+    setForm(f => ({ ...f, descripcion: "", monto: "" }));
+    showFlash(form.tipo === "entrada" ? "✓ Entrada registrada" : "✓ Salida registrada");
+    setTimeout(() => inputRef.current?.focus(), 50);
+  }
+
+  function eliminarMovimiento(id) {
+    const nuevos = movimientos.filter(d => d.id !== id);
+    persist(nuevos, saldoInicial);
+  }
+
+  function guardarSaldoInicial() {
+    const v = parseFloat(saldoInput);
+    if (!isNaN(v)) persist(movimientos, v);
+    setEditSaldo(false);
+  }
+
+  const totalEntradas = movimientos.filter(m => m.tipo === "entrada").reduce((s, m) => s + m.monto, 0);
+  const totalSalidas = movimientos.filter(m => m.tipo === "salida").reduce((s, m) => s + m.monto, 0);
+  const saldoTotal = saldoInicial + totalEntradas - totalSalidas;
+
+  const nombre1 = localStorage.getItem("nombre_local1") || "Cornella";
+  const nombre2 = localStorage.getItem("nombre_local2") || "Badalona";
+
+  return (
+    <div style={{ position: "relative" }}>
+      {flash && <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: "#2a5c3f", color: "#b8f5c8", padding: "8px 22px", borderRadius: 40, fontSize: 12, zIndex: 999, boxShadow: "0 4px 16px rgba(0,0,0,0.5)", whiteSpace: "nowrap" }}>{flash}</div>}
+
+      {/* Saldo total */}
+      <div style={{ background: saldoTotal >= 0 ? "#0e1f16" : "#1f0e0e", border: `1px solid ${saldoTotal >= 0 ? "#2a5c3f" : "#5c2a2a"}`, borderRadius: 14, padding: "16px 20px", marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <div style={{ fontSize: 10, letterSpacing: 3, color: "#6a6047", textTransform: "uppercase", marginBottom: 4 }}>🔒 Caja Fuerte</div>
+          <div style={{ fontSize: 28, color: saldoTotal >= 0 ? "#4caf82" : "#c0503a", fontWeight: "bold" }}>{formatCurrency(saldoTotal)}</div>
+          <div style={{ fontSize: 10, color: "#5a5240", marginTop: 2 }}>Saldo actual en caja fuerte</div>
+        </div>
+        <button onClick={() => setEditSaldo(true)} style={{ background: "transparent", border: "1px solid #3a3520", color: "#8a7f5e", padding: "7px 14px", borderRadius: 20, fontSize: 11, cursor: "pointer" }}>✏️ Saldo inicial</button>
+      </div>
+
+      {/* Editar saldo inicial */}
+      {editSaldo && (
+        <div style={{ background: "#0f0e0b", border: "1px solid #2e2b22", borderRadius: 10, padding: 14, marginBottom: 14 }}>
+          <div style={{ fontSize: 11, color: "#6a6047", marginBottom: 6 }}>Saldo inicial en caja fuerte</div>
+          <div style={{ display: "flex", gap: 6 }}>
+            <input type="number" value={saldoInput} onChange={e => setSaldoInput(e.target.value)} placeholder="0" style={{ ...inp, flex: 1 }} />
+            <button onClick={guardarSaldoInicial} style={{ ...btnPri, background: "#4caf82" }}>Guardar</button>
+            <button onClick={() => setEditSaldo(false)} style={btnSec}>×</button>
+          </div>
+        </div>
+      )}
+
+      {/* Resumen */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 16 }}>
+        {[["Saldo Inicial", saldoInicial, "#8a7f5e"], ["Total Entradas", totalEntradas, "#4caf82"], ["Total Salidas", totalSalidas, "#c0503a"]].map(([label, val, color]) => (
+          <div key={label} style={{ background: "#141210", border: "1px solid #2e2b22", borderRadius: 10, padding: "12px 10px", textAlign: "center" }}>
+            <div style={{ fontSize: 9, color: "#5a5240", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>{label}</div>
+            <div style={{ fontSize: 14, color, fontWeight: "bold" }}>{formatCurrency(val)}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Formulario */}
+      <div style={{ background: "#141210", border: "1px solid #2e2b22", borderRadius: 12, padding: 16, marginBottom: 16 }}>
+        <div style={{ fontSize: 10, letterSpacing: 2, color: "#6a6047", textTransform: "uppercase", marginBottom: 12 }}>Nuevo Movimiento</div>
+
+        {/* Tipo entrada/salida */}
+        <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+          {[["entrada", "💰 Entrada", "#2a5c3f", "#4caf82"], ["salida", "💸 Salida", "#5c2a2a", "#c0503a"]].map(([t, label, bg, col]) => (
+            <button key={t} onClick={() => setForm(f => ({ ...f, tipo: t }))}
+              style={{ flex: 1, padding: "9px 0", borderRadius: 8, border: `1px solid ${form.tipo === t ? col : "#2e2b22"}`, background: form.tipo === t ? bg : "transparent", color: form.tipo === t ? col : "#6a6047", fontSize: 12, cursor: "pointer" }}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Motivo (solo para salidas) */}
+        {form.tipo === "salida" && (
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ fontSize: 10, color: "#6a6047", letterSpacing: 1, marginBottom: 6 }}>MOTIVO DE SALIDA</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
+              {MOTIVOS_SALIDA.map(m => (
+                <button key={m} onClick={() => setForm(f => ({ ...f, motivo: m }))}
+                  style={{ padding: "7px 8px", borderRadius: 7, border: `1px solid ${form.motivo === m ? "#c0503a" : "#2e2b22"}`, background: form.motivo === m ? "#5c2a2a" : "transparent", color: form.motivo === m ? "#c0503a" : "#6a6047", fontSize: 10, cursor: "pointer", textAlign: "left" }}>
+                  {m}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Origen local */}
+        <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+          {[["local1", nombre1, "#c9a84c"], ["local2", nombre2, "#6a9fd8"]].map(([id, nombre, color]) => (
+            <button key={id} onClick={() => setForm(f => ({ ...f, origen: id }))}
+              style={{ flex: 1, padding: "7px 0", borderRadius: 8, border: `1px solid ${form.origen === id ? color : "#2e2b22"}`, background: form.origen === id ? color + "22" : "transparent", color: form.origen === id ? color : "#6a6047", fontSize: 11, cursor: "pointer" }}>
+              {nombre}
+            </button>
+          ))}
+        </div>
+
+        <input type="text" placeholder="Descripción (opcional)" value={form.descripcion} onChange={e => setForm(f => ({ ...f, descripcion: e.target.value }))} style={{ ...inp, width: "100%", boxSizing: "border-box", marginBottom: 8 }} />
+        <div style={{ display: "flex", gap: 6 }}>
+          <input ref={inputRef} type="number" placeholder="Monto" value={form.monto} onChange={e => setForm(f => ({ ...f, monto: e.target.value }))} onKeyDown={e => e.key === "Enter" && agregarMovimiento()} style={{ ...inp, flex: 1 }} />
+          <button onClick={agregarMovimiento} style={{ ...btnPri, background: form.tipo === "entrada" ? "#4caf82" : "#c0503a" }}>+ Agregar</button>
+        </div>
+      </div>
+
+      {/* Lista movimientos */}
+      <div style={{ fontSize: 10, letterSpacing: 2, color: "#6a6047", textTransform: "uppercase", marginBottom: 10 }}>Historial</div>
+      {movimientos.length === 0 && <div style={{ textAlign: "center", color: "#3a3520", fontSize: 13, padding: "20px 0" }}>Sin movimientos registrados</div>}
+      {movimientos.slice().reverse().map(mov => {
+        const color = mov.tipo === "entrada" ? "#4caf82" : "#c0503a";
+        const localColor = mov.origen === "local1" ? "#c9a84c" : "#6a9fd8";
+        return (
+          <div key={mov.id} style={{ background: "#141210", border: "1px solid #2e2b22", borderRadius: 10, padding: "10px 14px", marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
+              <div>
+                <div style={{ fontSize: 12, color: "#c8c0aa" }}>{mov.descripcion}</div>
+                <div style={{ fontSize: 10, color: "#5a5240" }}>
+                  <span style={{ color: localColor }}>{mov.nombreOrigen}</span>
+                  {mov.tipo === "salida" && mov.motivo && <span style={{ color: "#c0503a88" }}> · {mov.motivo}</span>}
+                  {" · "}{formatDateShort(mov.fecha)} · {mov.hora}
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ fontSize: 14, color, fontWeight: "bold" }}>{mov.tipo === "entrada" ? "+" : "-"}{formatCurrency(mov.monto)}</div>
+              <button onClick={() => eliminarMovimiento(mov.id)} style={{ background: "none", border: "none", color: "#3a3520", cursor: "pointer", fontSize: 16 }}>×</button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
   const [mainTab,setMainTab]=useState("caja");
   const [user,setUser]=useState(null);
   const [checkingAuth,setCheckingAuth]=useState(true);
@@ -900,9 +1083,9 @@ export default function App() {
         </div>
       </div>
       <div style={{display:"flex",borderBottom:"1px solid #2e2b22",background:"#141210"}}>
-        {[["caja","💼 Caja"],["informes","📋 Informes"]].map(([k,label])=>(
+        {[["caja","💼 Caja"],["fuerte","🔒 Caja Fuerte"],["informes","📋 Informes"]].map(([k,label])=>(
           <button key={k} onClick={()=>setMainTab(k)}
-            style={{flex:1,padding:"11px 0",background:"transparent",border:"none",borderBottom:mainTab===k?"2px solid #c9a84c":"2px solid transparent",color:mainTab===k?"#c9a84c":"#6a6047",fontSize:12,cursor:"pointer",letterSpacing:1}}>
+            style={{flex:1,padding:"11px 0",background:"transparent",border:"none",borderBottom:mainTab===k?"2px solid #c9a84c":"2px solid transparent",color:mainTab===k?"#c9a84c":"#6a6047",fontSize:11,cursor:"pointer",letterSpacing:1}}>
             {label}
           </button>
         ))}
@@ -914,6 +1097,7 @@ export default function App() {
             {LOCALES.map(local=><CajaLocal key={local.id} local={local}/>)}
           </div>
         </>}
+        {mainTab==="fuerte"&&<CajaFuerte/>}
         {mainTab==="informes"&&<Informes/>}
         <div style={{marginTop:12,fontSize:9,color:"#3a3520",textAlign:"center",letterSpacing:1}}>
           Toca el nombre para renombrarlo · Punto verde = día con datos · Punto rojo = descuadre
