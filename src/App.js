@@ -973,7 +973,7 @@ export default function App() {
           <div>
             <div style={{fontSize:9,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Libro de Caja Entre Pues</div>
             <div style={{fontSize:16,color:"#f0e8d0"}}>Entre Pues</div>
-            <div style={{fontSize:16,color:"#f0e8d0"}}>Mis Negocios</div>
+            <div style={{fontSize:16,color:"#f0e8d0"}}></div>
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
