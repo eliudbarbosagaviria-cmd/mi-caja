@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import { Analytics } from "@vercel/analytics/react";
 import * as XLSX from "xlsx";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { initializeApp } from "firebase/app";
@@ -892,7 +891,7 @@ function WelcomeScreen({onEntrar}) {
   );
 }
 
-
+function LoginScreen() {
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
   const [error,setError]=useState("");
@@ -1325,7 +1324,6 @@ export default function App() {
         </div>
       </div>
     </div>
-    <Analytics />
   );
 }
 
