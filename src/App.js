@@ -46,6 +46,9 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
 
+const ADMIN_EMAIL = "eliudbarbosagaviria@gmail.com";
+function isAdmin(user) { return user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase(); }
+
 const LOCALES = [
   { id: "local1", nombre: "Cornella", emoji: "🏪", color: "#c9a84c" },
   { id: "local2", nombre: "Badalona", emoji: "🏬", color: "#6a9fd8" },
@@ -599,7 +602,8 @@ function Informes() {
   );
 }
 
-function CajaLocal({local}) {
+function CajaLocal({local, user}) {
+  const admin = isAdmin(user);
   const today=getDateKey();
   const [viewDate,setViewDate]=useState(today);
   const [tab,setTab]=useState("hoy");
@@ -689,7 +693,7 @@ function CajaLocal({local}) {
         </div>
       </div>
       <div style={{display:"flex",borderBottom:"1px solid #2e2b22"}}>
-        {[["hoy","📋 Caja"],["historial","📅 Calendario"]].map(([k,label])=>(
+        {[["hoy","📋 Caja"],...(admin?[["historial","📅 Calendario"]]:[])].map(([k,label])=>(
           <button key={k} onClick={()=>{setTab(k);if(k==="hoy")setViewDate(today);}}
             style={{flex:1,padding:"9px 0",background:"transparent",border:"none",borderBottom:tab===k?`2px solid ${accent}`:"2px solid transparent",color:tab===k?accent:"#6a6047",fontSize:11,cursor:"pointer",letterSpacing:1}}>
             {label}
@@ -722,14 +726,14 @@ function CajaLocal({local}) {
         </div>
         {tab==="historial"&&<CalendarioMes localId={local.id} onSelectDate={setViewDate} selectedDate={viewDate} accent={accent}/>}
         {!isFuture&&<DescuadrePanel calc={calc} cajaReal={dayData.cajaReal??null} onSetCajaReal={v=>persist({...dayData,cajaReal:v})} editable={!dayData.cerrado}/>}
-        {!isFuture&&!dayData.cerrado&&(
+        {!isFuture&&!dayData.cerrado&&(admin||isToday)&&(
           <div style={{display:"flex",gap:6,marginBottom:12}}>
             <button onClick={()=>setEditSaldo(true)} style={{...btnSec,fontSize:10}}>✏️ Saldo inicial</button>
             <button onClick={()=>setShowCierre(true)} style={{background:accent,border:"none",color:"#0f0e0b",padding:"7px 14px",borderRadius:20,fontSize:11,fontWeight:"bold",cursor:"pointer"}}>🔒 Cerrar caja</button>
           </div>
         )}
-        {dayData.cerrado&&<div style={{fontSize:10,color:accent,marginBottom:10}}>CERRADA ✓ {dayData.horaCierre} <span onClick={()=>persist({...dayData,cerrado:false})} style={{color:"#6a6047",cursor:"pointer",borderBottom:"1px dashed #4a4335",marginLeft:8}}>Reabrir</span></div>}
-        {editSaldo&&(
+        {dayData.cerrado&&<div style={{fontSize:10,color:accent,marginBottom:10}}>CERRADA ✓ {dayData.horaCierre} {admin&&<span onClick={()=>persist({...dayData,cerrado:false})} style={{color:"#6a6047",cursor:"pointer",borderBottom:"1px dashed #4a4335",marginLeft:8}}>Reabrir</span>}</div>}
+        {editSaldo&&(admin||isToday)&&(
           <div style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:8,padding:12,marginBottom:12}}>
             <div style={{fontSize:11,color:"#6a6047",marginBottom:6}}>Saldo inicial (efectivo al abrir)</div>
             <div style={{display:"flex",gap:6}}>
@@ -739,7 +743,7 @@ function CajaLocal({local}) {
             </div>
           </div>
         )}
-        {!isFuture&&!dayData.cerrado&&(
+        {!isFuture&&!dayData.cerrado&&(admin||isToday)&&(
           <div style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:10,padding:14,marginBottom:12}}>
             {!isToday&&<div style={{fontSize:10,color:"#c9a84c",marginBottom:8}}>⚠ Registrando en día pasado: {formatDateShort(viewDate)}</div>}
             {/* Ventas por método de pago */}
@@ -804,7 +808,7 @@ function CajaLocal({local}) {
                 </div>
                 <div style={{display:"flex",alignItems:"center",gap:7}}>
                   <div style={{fontSize:12,fontWeight:"bold",color:info.color}}>{info.signo>0?"+":"-"}{formatCurrency(mov.monto)}</div>
-                  {!dayData.cerrado&&<button onClick={()=>deleteMovimiento(mov.id)} style={{background:"none",border:"none",color:"#3a3520",cursor:"pointer",fontSize:15}}>×</button>}
+                  {!dayData.cerrado&&(admin||isToday)&&<button onClick={()=>deleteMovimiento(mov.id)} style={{background:"none",border:"none",color:"#3a3520",cursor:"pointer",fontSize:15}}>×</button>}
                 </div>
               </div>
             );
@@ -1314,7 +1318,7 @@ export default function App() {
         {mainTab==="caja"&&<>
           <ResumenConsolidado/>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-            {LOCALES.map(local=><CajaLocal key={local.id} local={local}/>)}
+            {LOCALES.map(local=><CajaLocal key={local.id} local={local} user={user}/>)}
           </div>
         </>}
         {mainTab==="fuerte"&&<CajaFuerte/>}
