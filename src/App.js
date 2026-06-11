@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import * as XLSX from "xlsx";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { initializeApp } from "firebase/app";
@@ -863,7 +864,35 @@ function ResumenConsolidado() {
   );
 }
 
-function LoginScreen() {
+function WelcomeScreen({onEntrar}) {
+  return(
+    <div style={{minHeight:"100vh",background:"#0f0e0b",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif",padding:"20px"}}>
+      <div style={{maxWidth:360,width:"100%"}}>
+        {/* Logo */}
+        <div style={{textAlign:"center",marginBottom:32}}>
+          <img src={require("./logo.png")} alt="Logo" style={{height:90,borderRadius:12,objectFit:"contain",marginBottom:16}}/>
+          <div style={{fontSize:10,letterSpacing:4,color:"#6a6047",textTransform:"uppercase"}}>Bienvenido a</div>
+          <div style={{fontSize:24,color:"#f0e8d0",fontWeight:"normal",marginTop:4}}>Entre Pues</div>
+        </div>
+
+        {/* Mensaje */}
+        <div style={{background:"#1a1710",border:"1px solid #c9a84c33",borderRadius:16,padding:24,marginBottom:32}}>
+          <div style={{fontSize:10,color:"#c9a84c",letterSpacing:2,textTransform:"uppercase",marginBottom:12}}>Mensaje</div>
+          <div style={{fontSize:13,color:"#d4c89a",lineHeight:1.8,fontStyle:"italic"}}>
+            "Bienvenido al equipo de Entre Pues. Recuerda registrar cada movimiento de caja con precisión. Juntos hacemos que el negocio funcione."
+          </div>
+        </div>
+
+        {/* Botón entrar */}
+        <button onClick={onEntrar} style={{width:"100%",background:"#c9a84c",border:"none",color:"#0f0e0b",padding:"14px 0",borderRadius:12,fontSize:14,fontWeight:"bold",cursor:"pointer",fontFamily:"Georgia,serif",letterSpacing:1}}>
+          Entrar →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
   const [error,setError]=useState("");
@@ -1245,6 +1274,7 @@ export default function App() {
   const [mainTab,setMainTab]=useState("dashboard");
   const [user,setUser]=useState(null);
   const [checkingAuth,setCheckingAuth]=useState(true);
+  const [showWelcome,setShowWelcome]=useState(true);
   useEffect(()=>{
     const unsub=onAuthStateChanged(auth,(u)=>{setUser(u);setCheckingAuth(false);});
     return()=>unsub();
@@ -1254,6 +1284,7 @@ export default function App() {
       <div style={{color:"#6a6047",fontFamily:"Georgia,serif",fontSize:13,letterSpacing:2}}>Cargando...</div>
     </div>
   );
+  if(!user && showWelcome) return <WelcomeScreen onEntrar={()=>setShowWelcome(false)}/>;
   if(!user) return <LoginScreen/>;
   return(
     <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#0f0e0b",color:"#e8e0cc",padding:"0 0 60px"}}>
@@ -1294,6 +1325,7 @@ export default function App() {
         </div>
       </div>
     </div>
+    <Analytics />
   );
 }
 
