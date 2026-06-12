@@ -231,44 +231,44 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
   function guardar(){const v=parseFloat(inputVal);if(!isNaN(v)){onSetCajaReal(v);}setEditando(false);}
   const dif=calc.diferencia;
   const hayDif=dif!==null&&dif!==0;
-  const borderColor=dif===null?"#2e2b22":hayDif?"#c0503a33":"#2a5c3f33";
-  const bgColor=dif===null?"#141210":hayDif?"#1f0e0e":"#0e1f16";
+  const borderColor=dif===null?"#2a2820":hayDif?"#c0503a55":"#4caf8255";
+  const bgColor=dif===null?"#0a0908":hayDif?"#1f0e0e":"#0a1f12";
   return(
     <div style={{background:bgColor,border:`1px solid ${borderColor}`,borderRadius:10,padding:"12px 14px",marginBottom:14}}>
-      <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase",marginBottom:10}}>Arqueo de Caja</div>
+      <div style={{fontSize:10,letterSpacing:2,color:"#c9a84c",textTransform:"uppercase",marginBottom:10,fontWeight:"bold"}}>Arqueo de Caja</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:10}}>
-        <div style={{textAlign:"center"}}>
-          <div style={{fontSize:9,color:"#5a5240",textTransform:"uppercase",letterSpacing:1,marginBottom:3}}>Caja Inicial</div>
+        <div style={{textAlign:"center",background:"#0d0c0a",borderRadius:8,padding:"8px 4px"}}>
+          <div style={{fontSize:9,color:"#6a6047",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Inicial</div>
           <div style={{fontSize:13,color:"#8a7f5e",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor-calc.ventas-calc.depositos+calc.gastos+calc.retiros)}</div>
         </div>
-        <div style={{textAlign:"center"}}>
-          <div style={{fontSize:9,color:"#5a5240",textTransform:"uppercase",letterSpacing:1,marginBottom:3}}>Caja Teórica</div>
+        <div style={{textAlign:"center",background:"#0d0c0a",borderRadius:8,padding:"8px 4px"}}>
+          <div style={{fontSize:9,color:"#6a6047",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Teórica</div>
           <div style={{fontSize:14,color:"#c9a84c",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor)}</div>
-          <div style={{fontSize:8,color:"#4a4335",marginTop:2}}>= Inicial + Ventas + Dep. − Gas. − Ret.</div>
+          <div style={{fontSize:7,color:"#4a4335",marginTop:2}}>= Ini + Vtas − Gas</div>
         </div>
-        <div style={{textAlign:"center"}}>
-          <div style={{fontSize:9,color:"#5a5240",textTransform:"uppercase",letterSpacing:1,marginBottom:3}}>Caja Real</div>
+        <div style={{textAlign:"center",background:"#0d0c0a",borderRadius:8,padding:"8px 4px"}}>
+          <div style={{fontSize:9,color:"#6a6047",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Real</div>
           {cajaReal!==null&&!editando
             ?<div style={{fontSize:14,color:"#d4c89a",fontWeight:"bold",cursor:editable?"pointer":"default"}} onClick={()=>editable&&setEditando(true)}>{formatCurrency(cajaReal)}</div>
             :editando
               ?<div style={{display:"flex",gap:4,justifyContent:"center"}}>
-                <input type="number" value={inputVal} onChange={e=>setInputVal(e.target.value)} onKeyDown={e=>e.key==="Enter"&&guardar()} style={{...inp,width:80,padding:"4px 6px",fontSize:11}} autoFocus/>
+                <input type="number" value={inputVal} onChange={e=>setInputVal(e.target.value)} onKeyDown={e=>e.key==="Enter"&&guardar()} style={{...inp,width:70,padding:"4px 6px",fontSize:11}} autoFocus/>
                 <button onClick={guardar} style={{background:"#2a5c3f",border:"none",color:"#4caf82",borderRadius:6,padding:"3px 8px",cursor:"pointer",fontSize:12}}>✓</button>
               </div>
               :editable
-                ?<button onClick={()=>setEditando(true)} style={{background:"transparent",border:"1px dashed #3a3520",color:"#5a5240",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:10}}>+ Ingresar</button>
+                ?<button onClick={()=>setEditando(true)} style={{background:"#1a2a1a",border:"1px solid #4caf8244",color:"#4caf82",borderRadius:6,padding:"4px 8px",cursor:"pointer",fontSize:9,fontWeight:"bold"}}>+ Ingresar</button>
                 :<div style={{fontSize:12,color:"#4a4335"}}>–</div>
           }
         </div>
       </div>
       {dif!==null&&(
-        <div style={{borderTop:"1px solid #2e2b22",paddingTop:10,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <div style={{borderTop:`1px solid ${hayDif?"#5c2a2a":"#2a5c3f"}`,paddingTop:10,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div style={{fontSize:11,color:hayDif?"#c0503a":"#4caf82",fontWeight:"bold"}}>{hayDif?"⚠ DESCUADRE":"✓ CUADRE EXACTO"}</div>
           <div style={{fontSize:16,color:hayDif?"#c0503a":"#4caf82",fontWeight:"bold"}}>{dif>0?"+":""}{formatCurrency(dif)}</div>
         </div>
       )}
       {dif!==null&&hayDif&&(
-        <div style={{marginTop:6,fontSize:10,color:"#8a3a2a",background:"#2a0e0e",borderRadius:6,padding:"6px 10px"}}>
+        <div style={{marginTop:6,fontSize:10,color:"#f0a090",background:"#2a0e0e",borderRadius:6,padding:"6px 10px",border:"1px solid #5c2a2a33"}}>
           {dif>0?`Hay ${formatCurrency(Math.abs(dif))} más de lo esperado en caja.`:`Faltan ${formatCurrency(Math.abs(dif))} en caja respecto al cálculo teórico.`}
         </div>
       )}
@@ -754,21 +754,21 @@ function CajaLocal({local, user}) {
           <div style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:10,padding:14,marginBottom:12}}>
             {!isToday&&<div style={{fontSize:10,color:"#c9a84c",marginBottom:8}}>⚠ Registrando en día pasado: {formatDateShort(viewDate)}</div>}
             {/* Ventas por método de pago */}
-            <div style={{fontSize:9,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",marginBottom:6}}>Ventas</div>
+            <div style={{fontSize:9,color:"#c9a84c",letterSpacing:2,textTransform:"uppercase",marginBottom:6,fontWeight:"bold"}}>Ventas</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:8}}>
               {[["venta","💵 Efectivo","#4caf82"],["venta_tarjeta","💳 Tarjeta","#7ac8f0"],["venta_bizum","📱 Bizum","#a78bfa"],["venta_sumup","🔵 SumUp","#f59e42"]].map(([tipo,label,color])=>(
                 <button key={tipo} onClick={()=>setForm(f=>({...f,tipo,categoria:CATS[tipo][0]}))}
-                  style={{padding:"7px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:"#2e2b22"}`,background:form.tipo===tipo?color+"22":"transparent",color:form.tipo===tipo?color:"#5a5240",fontSize:10,cursor:"pointer",textAlign:"center"}}>
+                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#0a0908",color:form.tipo===tipo?color:color+"88",fontSize:10,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
                   {label}
                 </button>
               ))}
             </div>
             {/* Otros movimientos */}
-            <div style={{fontSize:9,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",marginBottom:6}}>Otros</div>
+            <div style={{fontSize:9,color:"#c9a84c",letterSpacing:2,textTransform:"uppercase",marginBottom:6,fontWeight:"bold"}}>Otros</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:5,marginBottom:10}}>
               {[["deposito","🏦 Depósito","#6ac8d8"],["gasto","🧾 Gasto","#c0503a"],["retiro","💸 Retiro","#d48a3a"]].map(([tipo,label,color])=>(
                 <button key={tipo} onClick={()=>setForm(f=>({...f,tipo,categoria:CATS[tipo][0]}))}
-                  style={{padding:"7px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:"#2e2b22"}`,background:form.tipo===tipo?color+"22":"transparent",color:form.tipo===tipo?color:"#5a5240",fontSize:10,cursor:"pointer",textAlign:"center"}}>
+                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#0a0908",color:form.tipo===tipo?color:color+"88",fontSize:10,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
                   {label}
                 </button>
               ))}
