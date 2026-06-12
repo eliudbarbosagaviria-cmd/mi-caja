@@ -82,9 +82,11 @@ function getDateKey(date) { const d=date||new Date(); return d.toISOString().spl
 function getWeekNumber(dateStr) {
   const [y,m,d]=dateStr.split("-").map(Number);
   const date=new Date(y,m-1,d);
-  const soy=new Date(y,0,1);
-  const doy=Math.floor((date-soy)/86400000);
-  return Math.ceil((doy+(soy.getDay()||7))/7);
+  // ISO 8601: semana empieza el lunes
+  const day=date.getDay()||7; // 1=Lun, 7=Dom
+  date.setDate(date.getDate()+4-day);
+  const yearStart=new Date(date.getFullYear(),0,1);
+  return Math.ceil(((date-yearStart)/86400000+1)/7);
 }
 
 function formatCurrency(val) {
