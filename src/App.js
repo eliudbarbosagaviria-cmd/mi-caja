@@ -244,7 +244,7 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
         <div style={{textAlign:"center",background:"#0d0c0a",borderRadius:8,padding:"8px 4px"}}>
           <div style={{fontSize:9,color:"#6a6047",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Teórica</div>
           <div style={{fontSize:14,color:"#c9a84c",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor)}</div>
-          <div style={{fontSize:7,color:"#4a4335",marginTop:2}}>= Ini + Vtas − Gas</div>
+          <div style={{fontSize:8,color:"#6a6047",marginTop:2}}>= Ini + Vtas − Gas</div>
         </div>
         <div style={{textAlign:"center",background:"#0d0c0a",borderRadius:8,padding:"8px 4px"}}>
           <div style={{fontSize:9,color:"#6a6047",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Real</div>
@@ -257,7 +257,7 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
               </div>
               :editable
                 ?<button onClick={()=>setEditando(true)} style={{background:"#1a2a1a",border:"1px solid #4caf8244",color:"#4caf82",borderRadius:6,padding:"4px 8px",cursor:"pointer",fontSize:9,fontWeight:"bold"}}>+ Ingresar</button>
-                :<div style={{fontSize:12,color:"#4a4335"}}>–</div>
+                :<div style={{fontSize:12,color:"#6a6047"}}>–</div>
           }
         </div>
       </div>
@@ -292,7 +292,7 @@ function ResumenDiario({localId,dateKey,onClose}) {
           <button onClick={onClose} style={{background:"transparent",border:"none",color:"#6a6047",fontSize:20,cursor:"pointer"}}>×</button>
         </div>
         <div style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:10,padding:14,marginBottom:14}}>
-          <div style={{fontSize:9,color:"#5a5240",letterSpacing:2,textTransform:"uppercase",marginBottom:10}}>Cálculo</div>
+          <div style={{fontSize:9,color:"#c9a84c",letterSpacing:2,textTransform:"uppercase",fontWeight:"bold",marginBottom:10}}>Cálculo</div>
           {[["Caja Inicial",data.saldoInicial,"#8a7f5e",""],["+ Ventas efectivo",c.ventas,"#4caf82","+"],["+ Depósitos",c.depositos,"#6ac8d8","+"],["− Gastos",c.gastos,"#c0503a","−"],["− Retiros",c.retiros,"#d48a3a","−"]].map(([label,val,color,sign])=>(
             <div key={label} style={{display:"flex",justifyContent:"space-between",marginBottom:5,paddingBottom:5,borderBottom:"1px solid #1e1c14"}}>
               <span style={{fontSize:11,color:"#8a7f5e"}}>{label}</span>
@@ -332,7 +332,7 @@ function ResumenDiario({localId,dateKey,onClose}) {
           );
         })}
         {data.nota&&<div style={{background:"#110f07",border:"1px solid #2e2800",borderRadius:8,padding:10,marginTop:8}}>
-          <div style={{fontSize:9,color:"#5a5240",textTransform:"uppercase",letterSpacing:2,marginBottom:4}}>Nota</div>
+          <div style={{fontSize:9,color:"#c9a84c",textTransform:"uppercase",letterSpacing:2,fontWeight:"bold",marginBottom:4}}>Nota</div>
           <div style={{fontSize:11,color:"#c4b880",fontStyle:"italic"}}>{data.nota}</div>
         </div>}
       </div>
@@ -363,8 +363,8 @@ function CalendarioMes({localId,onSelectDate,selectedDate,accent}) {
         <button onClick={nextMonth} style={{background:"transparent",border:"none",color:month===now.getMonth()+1&&year===now.getFullYear()?"#2e2b22":"#6a6047",cursor:"pointer",fontSize:16,padding:"0 6px"}}>›</button>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"44px repeat(7,1fr)",gap:2,marginBottom:4}}>
-        <div style={{fontSize:9,color:"#4a4335",textAlign:"center"}}>Sem.</div>
-        {["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(d=><div key={d} style={{fontSize:9,color:"#4a4335",textAlign:"center"}}>{d}</div>)}
+        <div style={{fontSize:9,color:"#8a7f5e",textAlign:"center"}}>Sem.</div>
+        {["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(d=><div key={d} style={{fontSize:9,color:"#8a7f5e",textAlign:"center"}}>{d}</div>)}
       </div>
       {weekNums.map(wNum=>{
         const wDays=weeks[wNum];
@@ -698,7 +698,7 @@ function CajaLocal({local, user}) {
         </div>
         <div style={{textAlign:"right"}}>
           <div style={{fontSize:19,color:calc.cajaTeor>=0?"#4caf82":"#c0503a",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor)}</div>
-          <div style={{fontSize:9,color:"#5a5240",letterSpacing:1}}>CAJA TEÓRICA · {isToday?"HOY":formatDateShort(viewDate).toUpperCase()}</div>
+          <div style={{fontSize:9,color:"#8a7f5e",letterSpacing:1}}>CAJA TEÓRICA · {isToday?"HOY":formatDateShort(viewDate).toUpperCase()}</div>
           {hayDescuadre&&<div style={{fontSize:10,color:"#c0503a"}}>⚠ Descuadre {formatCurrency(calc.diferencia)}</div>}
         </div>
       </div>
@@ -745,7 +745,7 @@ function CajaLocal({local, user}) {
         {dayData.cerrado&&<div style={{fontSize:10,color:accent,marginBottom:10}}>CERRADA ✓ {dayData.horaCierre} {admin&&<span onClick={()=>persist({...dayData,cerrado:false})} style={{color:"#6a6047",cursor:"pointer",borderBottom:"1px dashed #4a4335",marginLeft:8}}>Reabrir</span>}</div>}
         {editSaldo&&(admin||isToday)&&(
           <div style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:8,padding:12,marginBottom:12}}>
-            <div style={{fontSize:11,color:"#6a6047",marginBottom:6}}>Saldo inicial (efectivo al abrir)</div>
+            <div style={{fontSize:11,color:"#8a7f5e",marginBottom:6}}>Saldo inicial (efectivo al abrir)</div>
             <div style={{display:"flex",gap:6}}>
               <input type="number" value={saldoInput} onChange={e=>setSaldoInput(e.target.value)} placeholder="0" style={{...inp,flex:1}}/>
               <button onClick={guardarSaldo} style={{...btnPri,background:accent}}>Guardar</button>
@@ -803,8 +803,8 @@ function CajaLocal({local, user}) {
         )}
         {showResumen&&<ResumenDiario localId={local.id} dateKey={viewDate} onClose={()=>setShowResumen(false)}/>}
         <div>
-          {dayData.movimientos.length===0&&!isFuture&&<div style={{textAlign:"center",color:"#3a3520",fontSize:12,padding:"14px 0"}}>Sin movimientos{isToday?" aún":""}</div>}
-          {isFuture&&<div style={{textAlign:"center",color:"#3a3520",fontSize:12,padding:"14px 0"}}>Día futuro</div>}
+          {dayData.movimientos.length===0&&!isFuture&&<div style={{textAlign:"center",color:"#6a6047",fontSize:12,padding:"14px 0"}}>Sin movimientos{isToday?" aún":""}</div>}
+          {isFuture&&<div style={{textAlign:"center",color:"#6a6047",fontSize:12,padding:"14px 0"}}>Día futuro</div>}
           {dayData.movimientos.slice().reverse().map(mov=>{
             const info=TIPOS_MOV[mov.tipo]||{color:"#8a7f5e",signo:1};
             return(
@@ -813,7 +813,7 @@ function CajaLocal({local, user}) {
                   <div style={{width:7,height:7,borderRadius:"50%",background:info.color,flexShrink:0}}/>
                   <div>
                     <div style={{fontSize:11,color:"#c8c0aa"}}>{mov.descripcion}</div>
-                    <div style={{fontSize:9}}><span style={{color:"#6a6047"}}>{mov.categoria}</span><span style={{color:"#d4c89a",fontWeight:"bold"}}> · {mov.hora}</span></div>
+                    <div style={{fontSize:9}}><span style={{color:"#8a7f5e"}}>{mov.categoria}</span><span style={{color:"#d4c89a",fontWeight:"bold"}}> · {mov.hora}</span></div>
                   </div>
                 </div>
                 <div style={{display:"flex",alignItems:"center",gap:7}}>
@@ -847,7 +847,7 @@ function ResumenConsolidado() {
   return(
     <div style={{background:"#1a1710",border:`1px solid ${hayAlerta?"#5c2a2a":"#3a3520"}`,borderRadius:14,padding:"10px 14px",marginBottom:8}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-        <div style={{fontSize:10,letterSpacing:3,color:"#6a6047",textTransform:"uppercase"}}>Consolidado Hoy</div>
+        <div style={{fontSize:10,letterSpacing:3,color:"#c9a84c",textTransform:"uppercase",fontWeight:"bold"}}>Consolidado Hoy</div>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
           {hayAlerta&&<span style={{fontSize:10,color:"#c0503a",background:"#2a0e0e",border:"1px solid #5c2a2a",borderRadius:20,padding:"2px 8px"}}>⚠ Descuadre</span>}
           <span style={{background:"#2a2010",border:"1px solid #c9a84c44",color:"#c9a84c",borderRadius:20,padding:"3px 10px",fontSize:10,fontWeight:"bold"}}>Semana {semana}</span>
@@ -884,7 +884,7 @@ function WelcomeScreen({onEntrar}) {
         {/* Logo */}
         <div style={{textAlign:"center",marginBottom:32}}>
           <img src={require("./logo.png")} alt="Logo" style={{height:90,borderRadius:12,objectFit:"contain",marginBottom:16}}/>
-          <div style={{fontSize:10,letterSpacing:4,color:"#6a6047",textTransform:"uppercase"}}>Bienvenido a</div>
+          <div style={{fontSize:10,letterSpacing:4,color:"#8a7f5e",textTransform:"uppercase"}}>Bienvenido a</div>
           <div style={{fontSize:24,color:"#f0e8d0",fontWeight:"normal",marginTop:4}}>Entre Pues</div>
         </div>
 
@@ -926,11 +926,11 @@ function LoginScreen() {
           <div style={{fontSize:18,color:"#f0e8d0",marginTop:2}}>Entre Pues</div>
         </div>
         <div style={{marginBottom:10}}>
-          <div style={{fontSize:10,color:"#6a6047",marginBottom:4,letterSpacing:1}}>EMAIL</div>
+          <div style={{fontSize:10,color:"#8a7f5e",marginBottom:4,letterSpacing:1}}>EMAIL</div>
           <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="tu@email.com" style={{...inp,width:"100%",boxSizing:"border-box"}}/>
         </div>
         <div style={{marginBottom:16}}>
-          <div style={{fontSize:10,color:"#6a6047",marginBottom:4,letterSpacing:1}}>CONTRASEÑA</div>
+          <div style={{fontSize:10,color:"#8a7f5e",marginBottom:4,letterSpacing:1}}>CONTRASEÑA</div>
           <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" onKeyDown={e=>e.key==="Enter"&&handleLogin()} style={{...inp,width:"100%",boxSizing:"border-box"}}/>
         </div>
         {error&&<div style={{fontSize:11,color:"#c0503a",marginBottom:12,textAlign:"center"}}>{error}</div>}
@@ -1023,7 +1023,7 @@ function CajaFuerte() {
         <div>
           <div style={{ fontSize: 10, letterSpacing: 3, color: "#c9a84c", textTransform: "uppercase", marginBottom: 4, fontWeight: "bold" }}>🔒 Caja Fuerte</div>
           <div style={{ fontSize: 28, color: saldoTotal >= 0 ? "#4caf82" : "#c0503a", fontWeight: "bold" }}>{formatCurrency(saldoTotal)}</div>
-          <div style={{ fontSize: 10, color: "#4a4335", marginTop: 2 }}>Saldo actual en caja fuerte</div>
+          <div style={{ fontSize: 10, color: "#6a6047", marginTop: 2 }}>Saldo actual en caja fuerte</div>
         </div>
         <button onClick={() => setEditSaldo(true)} style={{ background: "#1a2a1a", border: "1px solid #4caf8244", color: "#4caf82", padding: "7px 14px", borderRadius: 20, fontSize: 11, cursor: "pointer" }}>✏️ Saldo inicial</button>
       </div>
@@ -1193,9 +1193,9 @@ function Dashboard() {
 
       {/* Bienvenida */}
       <div style={{marginBottom:20}}>
-        <div style={{fontSize:11,color:"#6a6047",letterSpacing:2,textTransform:"uppercase"}}>Buenos días</div>
+        <div style={{fontSize:11,color:"#c9a84c",letterSpacing:2,textTransform:"uppercase",fontWeight:"bold"}}>Buenos días</div>
         <div style={{fontSize:22,color:"#f0e8d0",fontWeight:"normal"}}>{formatDate(today).split(",")[0].charAt(0).toUpperCase()+formatDate(today).split(",")[0].slice(1)}, {today.split("-")[2]} de {MESES[month-1]}</div>
-        <div style={{fontSize:11,color:"#6a6047"}}>Semana {weekNum}</div>
+        <div style={{fontSize:11,color:"#8a7f5e"}}>Semana {weekNum}</div>
       </div>
 
       {/* Tarjetas resumen hoy */}
@@ -1206,7 +1206,7 @@ function Dashboard() {
             <div key={local.id} style={{background:"#141210",border:`1px solid ${local.color}33`,borderRadius:14,padding:16}}>
               <div style={{fontSize:10,color:local.color,letterSpacing:1,marginBottom:8,fontWeight:"bold"}}>{local.emoji} {nombre}</div>
               <div style={{fontSize:24,color:"#f0e8d0",fontWeight:"bold",marginBottom:4}}>{formatCurrency(c.totalVentas)}</div>
-              <div style={{fontSize:10,color:"#5a5240",marginBottom:8}}>Ventas hoy</div>
+              <div style={{fontSize:10,color:"#8a7f5e",marginBottom:8}}>Ventas hoy</div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:8}}>
                 {[["💵",c.ventas,"#4caf82"],["💳",c.ventas_tarjeta,"#7ac8f0"],["📱",c.ventas_bizum,"#a78bfa"],["🔵",c.ventas_sumup,"#f59e42"]].map(([emoji,val,color])=>(
                   <div key={emoji} style={{textAlign:"center",background:"#080806",borderRadius:6,padding:"5px 4px"}}>
