@@ -452,30 +452,33 @@ function Informes() {
       <div>
         <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:16,flexWrap:"wrap"}}>
           <input type="date" value={fecha} max={today} onChange={e=>setFecha(e.target.value)} style={{...inp,fontSize:12}}/>
-          <span style={{fontSize:10,color:"#6a6047"}}>Sem. {getWeekNumber(fecha)}</span>
+          <span style={{fontSize:10,color:"#c9a84c",fontWeight:"bold"}}>Semana {getWeekNumber(fecha)}</span>
         </div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:2}}>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
           {LOCALES.map(local=>{
             const nombre=localStorage.getItem(`nombre_${local.id}`)||local.nombre;
             const d=loadDay(local.id,fecha); const c=calcDay(d);
             return(
-              <div key={local.id} style={{background:"#080806",border:`1px solid ${local.color}33`,borderRadius:12,padding:14}}>
-                <div style={{fontSize:11,color:local.color,marginBottom:10,fontWeight:"bold"}}>{local.emoji} {nombre}</div>
-                {[["Caja Inicial",d.saldoInicial,"#8a7f5e"],["Ventas",c.ventas,"#4caf82"],["Depósitos",c.depositos,"#6ac8d8"],["Gastos",c.gastos,"#c0503a"],["Retiros",c.retiros,"#d48a3a"]].map(([l,v,col])=>(
-                  <div key={l} style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-                    <span style={{fontSize:10,color:"#5a5240"}}>{l}</span>
-                    <span style={{fontSize:11,color:col,fontWeight:"bold"}}>{formatCurrency(v)}</span>
+              <div key={local.id} style={{background:"#0a0908",border:`1px solid ${local.color}44`,borderRadius:12,overflow:"hidden"}}>
+                <div style={{height:3,background:local.color}}/>
+                <div style={{padding:12}}>
+                  <div style={{fontSize:11,color:local.color,marginBottom:10,fontWeight:"bold"}}>{local.emoji} {nombre}</div>
+                  {[["Caja Inicial",d.saldoInicial,"#8a7f5e"],["Ventas",c.ventas,"#4caf82"],["Depósitos",c.depositos,"#6ac8d8"],["Gastos",c.gastos,"#c0503a"],["Retiros",c.retiros,"#d48a3a"]].map(([l,v,col])=>(
+                    <div key={l} style={{display:"flex",justifyContent:"space-between",marginBottom:6,paddingBottom:5,borderBottom:"1px solid #1a1815"}}>
+                      <span style={{fontSize:10,color:col,fontWeight:"bold"}}>{l}</span>
+                      <span style={{fontSize:11,color:col,fontWeight:"bold"}}>{formatCurrency(v)}</span>
+                    </div>
+                  ))}
+                  <div style={{borderTop:`1px solid ${local.color}33`,paddingTop:6,display:"flex",justifyContent:"space-between"}}>
+                    <span style={{fontSize:11,color:"#c9a84c",fontWeight:"bold"}}>Caja Teórica</span>
+                    <span style={{fontSize:13,color:"#c9a84c",fontWeight:"bold"}}>{formatCurrency(c.cajaTeor)}</span>
                   </div>
-                ))}
-                <div style={{borderTop:"1px solid #2e2b22",paddingTop:6,display:"flex",justifyContent:"space-between"}}>
-                  <span style={{fontSize:11,color:"#c9a84c"}}>Caja Teórica</span>
-                  <span style={{fontSize:13,color:"#c9a84c",fontWeight:"bold"}}>{formatCurrency(c.cajaTeor)}</span>
+                  {c.cajaReal!==null&&<div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+                    <span style={{fontSize:10,color:c.diferencia!==0?"#c0503a":"#4caf82",fontWeight:"bold"}}>{c.diferencia!==0?"⚠ Descuadre":"✓ Cuadre"}</span>
+                    <span style={{fontSize:11,color:c.diferencia!==0?"#c0503a":"#4caf82",fontWeight:"bold"}}>{c.diferencia>0?"+":""}{formatCurrency(c.diferencia)}</span>
+                  </div>}
+                  <div style={{fontSize:10,color:d.cerrado?"#4caf82":"#c9a84c",marginTop:6,fontWeight:"bold"}}>{d.cerrado?"✓ Cerrada":"● Abierta"}</div>
                 </div>
-                {c.cajaReal!==null&&<div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
-                  <span style={{fontSize:10,color:c.diferencia!==0?"#c0503a":"#4caf82"}}>{c.diferencia!==0?"⚠ Descuadre":"✓ Cuadre"}</span>
-                  <span style={{fontSize:11,color:c.diferencia!==0?"#c0503a":"#4caf82",fontWeight:"bold"}}>{c.diferencia>0?"+":""}{formatCurrency(c.diferencia)}</span>
-                </div>}
-                <div style={{fontSize:10,color:d.cerrado?"#4caf82":"#8a7f5e",marginTop:6}}>{d.cerrado?"Cerrada ✓":"Abierta"}</div>
               </div>
             );
           })}
@@ -501,12 +504,12 @@ function Informes() {
         </div>
         <ComparativaCards s1={s1} s2={s2} n1={nombre1} n2={nombre2} c1={LOCALES[0].color} c2={LOCALES[1].color}/>
         {dias.length>0&&<>
-          <div style={{fontSize:10,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",margin:"16px 0 8px"}}>Ingresos diarios</div>
+          <div style={{fontSize:10,color:"#c9a84c",letterSpacing:2,textTransform:"uppercase",margin:"16px 0 8px",fontWeight:"bold"}}>Ingresos diarios</div>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={dias}><CartesianGrid strokeDasharray="3 3" stroke="#2a2720"/>
-              <XAxis dataKey="dia" tick={{fill:"#6a6047",fontSize:9}} axisLine={false} tickLine={false}/>
-              <YAxis tick={{fill:"#6a6047",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
-              <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10}}/>
+            <BarChart data={dias}><CartesianGrid strokeDasharray="3 3" stroke="#1a1815"/>
+              <XAxis dataKey="dia" tick={{fill:"#8a7f5e",fontSize:9}} axisLine={false} tickLine={false}/>
+              <YAxis tick={{fill:"#8a7f5e",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
+              <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10,color:"#d4c89a"}}/>
               <Bar dataKey={nombre1} fill="#c9a84c" radius={[3,3,0,0]}/><Bar dataKey={nombre2} fill="#6a9fd8" radius={[3,3,0,0]}/>
             </BarChart>
           </ResponsiveContainer>
@@ -531,22 +534,22 @@ function Informes() {
         </div>
         <ComparativaCards s1={s1} s2={s2} n1={nombre1} n2={nombre2} c1={LOCALES[0].color} c2={LOCALES[1].color}/>
         {chartData.length>0&&<>
-          <div style={{fontSize:10,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",margin:"16px 0 8px"}}>Ingresos del mes</div>
+          <div style={{fontSize:10,color:"#c9a84c",letterSpacing:2,textTransform:"uppercase",margin:"16px 0 8px",fontWeight:"bold"}}>Ingresos del mes</div>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" stroke="#2a2720"/>
-              <XAxis dataKey="dia" tick={{fill:"#6a6047",fontSize:9}} axisLine={false} tickLine={false}/>
-              <YAxis tick={{fill:"#6a6047",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
+            <BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" stroke="#1a1815"/>
+              <XAxis dataKey="dia" tick={{fill:"#8a7f5e",fontSize:9}} axisLine={false} tickLine={false}/>
+              <YAxis tick={{fill:"#8a7f5e",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
               <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10}}/>
               <Bar dataKey={nombre1} fill="#c9a84c" radius={[3,3,0,0]}/><Bar dataKey={nombre2} fill="#6a9fd8" radius={[3,3,0,0]}/>
             </BarChart>
           </ResponsiveContainer>
-          <div style={{fontSize:10,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",margin:"16px 0 8px"}}>Gastos del mes</div>
+          <div style={{fontSize:10,color:"#c0503a",letterSpacing:2,textTransform:"uppercase",margin:"16px 0 8px",fontWeight:"bold"}}>Gastos del mes</div>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" stroke="#2a2720"/>
-              <XAxis dataKey="dia" tick={{fill:"#6a6047",fontSize:9}} axisLine={false} tickLine={false}/>
-              <YAxis tick={{fill:"#6a6047",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
+            <BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" stroke="#1a1815"/>
+              <XAxis dataKey="dia" tick={{fill:"#8a7f5e",fontSize:9}} axisLine={false} tickLine={false}/>
+              <YAxis tick={{fill:"#8a7f5e",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
               <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10}}/>
-              <Bar dataKey={`${nombre1} Gas`} fill="#8a3a2a" radius={[3,3,0,0]}/><Bar dataKey={`${nombre2} Gas`} fill="#3a5a8a" radius={[3,3,0,0]}/>
+              <Bar dataKey={`${nombre1} Gas`} fill="#c0503a" radius={[3,3,0,0]}/><Bar dataKey={`${nombre2} Gas`} fill="#d48a3a" radius={[3,3,0,0]}/>
             </BarChart>
           </ResponsiveContainer>
         </>}
@@ -566,20 +569,20 @@ function Informes() {
         <div style={{display:"flex",gap:8,marginBottom:16}}>
           <select value={year} onChange={e=>setYear(+e.target.value)} style={{...inp,fontSize:12}}>{years.map(y=><option key={y}>{y}</option>)}</select>
         </div>
-        <div style={{fontSize:10,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>Utilidad mensual comparada</div>
+        <div style={{fontSize:10,color:"#c9a84c",letterSpacing:2,textTransform:"uppercase",marginBottom:8,fontWeight:"bold"}}>Utilidad mensual comparada</div>
         <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={mesesData}><CartesianGrid strokeDasharray="3 3" stroke="#2a2720"/>
-            <XAxis dataKey="mes" tick={{fill:"#6a6047",fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis tick={{fill:"#6a6047",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={40}/>
+          <BarChart data={mesesData}><CartesianGrid strokeDasharray="3 3" stroke="#1a1815"/>
+            <XAxis dataKey="mes" tick={{fill:"#8a7f5e",fontSize:10}} axisLine={false} tickLine={false}/>
+            <YAxis tick={{fill:"#8a7f5e",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={40}/>
             <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10}}/>
             <Bar dataKey={nombre1} fill="#c9a84c" radius={[3,3,0,0]}/><Bar dataKey={nombre2} fill="#6a9fd8" radius={[3,3,0,0]}/>
           </BarChart>
         </ResponsiveContainer>
-        <div style={{fontSize:10,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",margin:"18px 0 8px"}}>Ventas + Depósitos mensuales</div>
+        <div style={{fontSize:10,color:"#4caf82",letterSpacing:2,textTransform:"uppercase",margin:"18px 0 8px",fontWeight:"bold"}}>Ventas + Depósitos mensuales</div>
         <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={mesesData}><CartesianGrid strokeDasharray="3 3" stroke="#2a2720"/>
-            <XAxis dataKey="mes" tick={{fill:"#6a6047",fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis tick={{fill:"#6a6047",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={40}/>
+          <LineChart data={mesesData}><CartesianGrid strokeDasharray="3 3" stroke="#1a1815"/>
+            <XAxis dataKey="mes" tick={{fill:"#8a7f5e",fontSize:10}} axisLine={false} tickLine={false}/>
+            <YAxis tick={{fill:"#8a7f5e",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={40}/>
             <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10}}/>
             <Line type="monotone" dataKey={`${nombre1}V`} name={nombre1} stroke="#c9a84c" strokeWidth={2} dot={{r:3}}/>
             <Line type="monotone" dataKey={`${nombre2}V`} name={nombre2} stroke="#6a9fd8" strokeWidth={2} dot={{r:3}}/>
@@ -591,11 +594,11 @@ function Informes() {
 
   return(
     <div style={{background:"#0a0908",border:"1px solid #1a1815",borderRadius:16,padding:20,marginBottom:24}}>
-      <div style={{fontSize:11,letterSpacing:2,color:"#8a7f5e",textTransform:"uppercase",marginBottom:14}}>📋 Informes</div>
+      <div style={{fontSize:11,letterSpacing:2,color:"#c9a84c",textTransform:"uppercase",marginBottom:14,fontWeight:"bold"}}>📋 Informes</div>
       <div style={{display:"flex",gap:6,marginBottom:20,flexWrap:"wrap"}}>
         {[["diario","📅 Diario"],["semanal","📆 Semanal"],["mensual","🗓 Mensual"],["comparativa","⚖ Comparativa"]].map(([k,label])=>(
           <button key={k} onClick={()=>setTipoInforme(k)}
-            style={{padding:"6px 14px",borderRadius:20,border:`1px solid ${tipoInforme===k?"#c9a84c":"#2e2b22"}`,background:tipoInforme===k?"#2a2010":"transparent",color:tipoInforme===k?"#c9a84c":"#6a6047",fontSize:11,cursor:"pointer"}}>
+            style={{padding:"6px 14px",borderRadius:20,border:`1px solid ${tipoInforme===k?"#c9a84c":"#c9a84c33"}`,background:tipoInforme===k?"#2a2010":"transparent",color:tipoInforme===k?"#c9a84c":"#6a6047",fontSize:11,cursor:"pointer",fontWeight:tipoInforme===k?"bold":"normal"}}>
             {label}
           </button>
         ))}
