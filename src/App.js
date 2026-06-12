@@ -717,17 +717,17 @@ function CajaLocal({local, user}) {
         {/* Métricas ventas por método + gastos */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:6}}>
           {[["💵 Efectivo",calc.ventas,"#4caf82"],["💳 Tarjeta",calc.ventas_tarjeta,"#7ac8f0"],["📱 Bizum",calc.ventas_bizum,"#a78bfa"],["🔵 SumUp",calc.ventas_sumup,"#f59e42"]].map(([label,val,color])=>(
-            <div key={label} style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
-              <div style={{fontSize:8,letterSpacing:1,color:"#4a4335",textTransform:"uppercase",marginBottom:3}}>{label}</div>
-              <div style={{fontSize:11,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
+            <div key={label} style={{background:"#0a0908",border:`1px solid ${color}44`,borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+              <div style={{fontSize:9,letterSpacing:1,color,marginBottom:3,fontWeight:"bold"}}>{label}</div>
+              <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
           ))}
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:12}}>
           {[["Depósitos",calc.depositos,"#6ac8d8"],["Gastos",calc.gastos,"#c0503a"],["Retiros",calc.retiros,"#d48a3a"]].map(([label,val,color])=>(
-            <div key={label} style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
-              <div style={{fontSize:8,letterSpacing:1,color:"#4a4335",textTransform:"uppercase",marginBottom:3}}>{label}</div>
-              <div style={{fontSize:11,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
+            <div key={label} style={{background:"#0a0908",border:`1px solid ${color}44`,borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+              <div style={{fontSize:9,letterSpacing:1,color,marginBottom:3,fontWeight:"bold"}}>{label}</div>
+              <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
           ))}
         </div>
