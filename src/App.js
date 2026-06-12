@@ -362,14 +362,18 @@ function CalendarioMes({localId,onSelectDate,selectedDate,accent}) {
       </div>
       <div style={{display:"grid",gridTemplateColumns:"44px repeat(7,1fr)",gap:2,marginBottom:4}}>
         <div style={{fontSize:9,color:"#4a4335",textAlign:"center"}}>Sem.</div>
-        {DIAS_CORTOS.map(d=><div key={d} style={{fontSize:9,color:"#4a4335",textAlign:"center"}}>{d}</div>)}
+        {["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].map(d=><div key={d} style={{fontSize:9,color:"#4a4335",textAlign:"center"}}>{d}</div>)}
       </div>
       {weekNums.map(wNum=>{
         const wDays=weeks[wNum];
         let wIng=0,wEgr=0;
         wDays.forEach(dk=>{const d=loadDay(localId,dk);const c=calcDay(d);wIng+=c.ventas+c.depositos;wEgr+=c.gastos+c.retiros;});
         const cells=Array(7).fill(null);
-        wDays.forEach(dk=>{const dow=new Date(...dk.split("-").map((v,i)=>i===1?+v-1:+v)).getDay();cells[dow]=dk;});
+        wDays.forEach(dk=>{
+          const raw=new Date(...dk.split("-").map((v,i)=>i===1?+v-1:+v)).getDay();
+          const dow=(raw+6)%7; // Lunes=0, Martes=1, ..., Domingo=6
+          cells[dow]=dk;
+        });
         return(
           <div key={wNum} style={{marginBottom:5}}>
             <div style={{display:"grid",gridTemplateColumns:"44px repeat(7,1fr)",gap:2,alignItems:"center"}}>
