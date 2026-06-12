@@ -210,7 +210,7 @@ function LocalNameEditor({local,onSave}) {
   if(editing) return(
     <span style={{display:"inline-flex",gap:4,alignItems:"center"}}>
       <input value={val} onChange={e=>setVal(e.target.value)} onKeyDown={e=>e.key==="Enter"&&save()}
-        style={{background:"#0f0e0b",border:"1px solid #3a3520",borderRadius:6,padding:"3px 8px",color:"#e8e0cc",fontSize:13,width:120}} autoFocus/>
+        style={{background:"#080806",border:"1px solid #3a3520",borderRadius:6,padding:"3px 8px",color:"#e8e0cc",fontSize:13,width:120}} autoFocus/>
       <button onClick={save} style={{background:"transparent",border:"none",color:"#4caf82",cursor:"pointer",fontSize:14}}>✓</button>
     </span>);
   return <span style={{cursor:"pointer",borderBottom:"1px dashed #4a4335"}} onClick={()=>setEditing(true)} title="Clic para renombrar">{val}</span>;
@@ -291,7 +291,7 @@ function ResumenDiario({localId,dateKey,onClose}) {
           </div>
           <button onClick={onClose} style={{background:"transparent",border:"none",color:"#6a6047",fontSize:20,cursor:"pointer"}}>×</button>
         </div>
-        <div style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:10,padding:14,marginBottom:14}}>
+        <div style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:10,padding:14,marginBottom:14}}>
           <div style={{fontSize:9,color:"#5a5240",letterSpacing:2,textTransform:"uppercase",marginBottom:10}}>Cálculo</div>
           {[["Caja Inicial",data.saldoInicial,"#8a7f5e",""],["+ Ventas efectivo",c.ventas,"#4caf82","+"],["+ Depósitos",c.depositos,"#6ac8d8","+"],["− Gastos",c.gastos,"#c0503a","−"],["− Retiros",c.retiros,"#d48a3a","−"]].map(([label,val,color,sign])=>(
             <div key={label} style={{display:"flex",justifyContent:"space-between",marginBottom:5,paddingBottom:5,borderBottom:"1px solid #1e1c14"}}>
@@ -356,7 +356,7 @@ function CalendarioMes({localId,onSelectDate,selectedDate,accent}) {
     setYear(ny);setMonth(nm);
   }
   return(
-    <div style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:12,padding:14,marginBottom:14}}>
+    <div style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:12,padding:14,marginBottom:14}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
         <button onClick={prevMonth} style={{background:"transparent",border:"none",color:"#6a6047",cursor:"pointer",fontSize:16,padding:"0 6px"}}>‹</button>
         <div style={{fontSize:13,color:"#d4c89a",fontWeight:"bold"}}>{MESES[month-1]} {year}</div>
@@ -413,7 +413,7 @@ function ComparativaCards({s1,s2,n1,n2,c1,c2}) {
   return(
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:10}}>
       {[[s1,n1,c1],[s2,n2,c2]].map(([s,n,c])=>(
-        <div key={n} style={{background:"#0f0e0b",border:`1px solid ${c}33`,borderRadius:10,padding:12}}>
+        <div key={n} style={{background:"#080806",border:`1px solid ${c}33`,borderRadius:10,padding:12}}>
           <div style={{fontSize:10,color:c,marginBottom:8,fontWeight:"bold"}}>{n}</div>
           {[["💵 Efectivo",s.ventas,"#4caf82"],["💳 Tarjeta",s.ventas_tarjeta,"#7ac8f0"],["📱 Bizum",s.ventas_bizum,"#a78bfa"],["🔵 SumUp",s.ventas_sumup,"#f59e42"],["Depósitos",s.depositos,"#6ac8d8"],["Gastos",s.gastos,"#c0503a"],["Retiros",s.retiros,"#d48a3a"]].map(([l,v,col])=>(
             <div key={l} style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
@@ -459,7 +459,7 @@ function Informes() {
             const nombre=localStorage.getItem(`nombre_${local.id}`)||local.nombre;
             const d=loadDay(local.id,fecha); const c=calcDay(d);
             return(
-              <div key={local.id} style={{background:"#0f0e0b",border:`1px solid ${local.color}33`,borderRadius:12,padding:14}}>
+              <div key={local.id} style={{background:"#080806",border:`1px solid ${local.color}33`,borderRadius:12,padding:14}}>
                 <div style={{fontSize:11,color:local.color,marginBottom:10,fontWeight:"bold"}}>{local.emoji} {nombre}</div>
                 {[["Caja Inicial",d.saldoInicial,"#8a7f5e"],["Ventas",c.ventas,"#4caf82"],["Depósitos",c.depositos,"#6ac8d8"],["Gastos",c.gastos,"#c0503a"],["Retiros",c.retiros,"#d48a3a"]].map(([l,v,col])=>(
                   <div key={l} style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
@@ -590,7 +590,7 @@ function Informes() {
   }
 
   return(
-    <div style={{background:"#141210",border:"1px solid #2e2b22",borderRadius:16,padding:20,marginBottom:24}}>
+    <div style={{background:"#0a0908",border:"1px solid #1a1815",borderRadius:16,padding:20,marginBottom:24}}>
       <div style={{fontSize:11,letterSpacing:2,color:"#8a7f5e",textTransform:"uppercase",marginBottom:14}}>📋 Informes</div>
       <div style={{display:"flex",gap:6,marginBottom:20,flexWrap:"wrap"}}>
         {[["diario","📅 Diario"],["semanal","📆 Semanal"],["mensual","🗓 Mensual"],["comparativa","⚖ Comparativa"]].map(([k,label])=>(
@@ -682,8 +682,9 @@ function CajaLocal({local, user}) {
   const hayDescuadre=calc.diferencia!==null&&calc.diferencia!==0;
 
   return(
-    <div style={{background:"#141210",border:`1px solid ${hayDescuadre?"#5c2a2a":accent+"33"}`,borderRadius:16,overflow:"hidden",position:"relative"}}>
+    <div style={{background:"#0f0e0b",border:`1px solid ${hayDescuadre?"#5c2a2a":accent+"44"}`,borderRadius:16,overflow:"hidden",position:"relative"}}>
       {flash&&<div style={{position:"absolute",top:12,left:"50%",transform:"translateX(-50%)",background:"#2a5c3f",color:"#b8f5c8",padding:"8px 22px",borderRadius:40,fontSize:12,zIndex:99,boxShadow:"0 4px 16px rgba(0,0,0,0.5)",whiteSpace:"nowrap"}}>{flash}</div>}
+      <div style={{height:3,background:hayDescuadre?"#c0503a":accent}}/>
       <div style={{background:`${accent}18`,borderBottom:`1px solid ${accent}33`,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <span style={{fontSize:20}}>{local.emoji}</span>
@@ -716,7 +717,7 @@ function CajaLocal({local, user}) {
         {/* Métricas ventas por método + gastos */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:6}}>
           {[["💵 Efectivo",calc.ventas,"#4caf82"],["💳 Tarjeta",calc.ventas_tarjeta,"#7ac8f0"],["📱 Bizum",calc.ventas_bizum,"#a78bfa"],["🔵 SumUp",calc.ventas_sumup,"#f59e42"]].map(([label,val,color])=>(
-            <div key={label} style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+            <div key={label} style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
               <div style={{fontSize:8,letterSpacing:1,color:"#4a4335",textTransform:"uppercase",marginBottom:3}}>{label}</div>
               <div style={{fontSize:11,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
@@ -724,7 +725,7 @@ function CajaLocal({local, user}) {
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:12}}>
           {[["Depósitos",calc.depositos,"#6ac8d8"],["Gastos",calc.gastos,"#c0503a"],["Retiros",calc.retiros,"#d48a3a"]].map(([label,val,color])=>(
-            <div key={label} style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+            <div key={label} style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
               <div style={{fontSize:8,letterSpacing:1,color:"#4a4335",textTransform:"uppercase",marginBottom:3}}>{label}</div>
               <div style={{fontSize:11,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
@@ -740,7 +741,7 @@ function CajaLocal({local, user}) {
         )}
         {dayData.cerrado&&<div style={{fontSize:10,color:accent,marginBottom:10}}>CERRADA ✓ {dayData.horaCierre} {admin&&<span onClick={()=>persist({...dayData,cerrado:false})} style={{color:"#6a6047",cursor:"pointer",borderBottom:"1px dashed #4a4335",marginLeft:8}}>Reabrir</span>}</div>}
         {editSaldo&&(admin||isToday)&&(
-          <div style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:8,padding:12,marginBottom:12}}>
+          <div style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:8,padding:12,marginBottom:12}}>
             <div style={{fontSize:11,color:"#6a6047",marginBottom:6}}>Saldo inicial (efectivo al abrir)</div>
             <div style={{display:"flex",gap:6}}>
               <input type="number" value={saldoInput} onChange={e=>setSaldoInput(e.target.value)} placeholder="0" style={{...inp,flex:1}}/>
@@ -750,7 +751,7 @@ function CajaLocal({local, user}) {
           </div>
         )}
         {!isFuture&&!dayData.cerrado&&(admin||isToday)&&(
-          <div style={{background:"#0f0e0b",border:"1px solid #2e2b22",borderRadius:10,padding:14,marginBottom:12}}>
+          <div style={{background:"#080806",border:"1px solid #2e2b22",borderRadius:10,padding:14,marginBottom:12}}>
             {!isToday&&<div style={{fontSize:10,color:"#c9a84c",marginBottom:8}}>⚠ Registrando en día pasado: {formatDateShort(viewDate)}</div>}
             {/* Ventas por método de pago */}
             <div style={{fontSize:9,color:"#6a6047",letterSpacing:2,textTransform:"uppercase",marginBottom:6}}>Ventas</div>
@@ -804,7 +805,7 @@ function CajaLocal({local, user}) {
           {dayData.movimientos.slice().reverse().map(mov=>{
             const info=TIPOS_MOV[mov.tipo]||{color:"#8a7f5e",signo:1};
             return(
-              <div key={mov.id} style={{background:"#0a0908",border:"1px solid #222018",borderRadius:8,padding:"9px 11px",marginBottom:5,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <div key={mov.id} style={{background:"#060504",border:"1px solid #141210",borderRadius:8,padding:"9px 11px",marginBottom:5,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
                   <div style={{width:7,height:7,borderRadius:"50%",background:info.color,flexShrink:0}}/>
                   <div>
@@ -875,7 +876,7 @@ function ResumenConsolidado() {
 
 function WelcomeScreen({onEntrar}) {
   return(
-    <div style={{minHeight:"100vh",background:"#0f0e0b",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif",padding:"20px"}}>
+    <div style={{minHeight:"100vh",background:"#080806",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif",padding:"20px"}}>
       <div style={{maxWidth:360,width:"100%"}}>
         {/* Logo */}
         <div style={{textAlign:"center",marginBottom:32}}>
@@ -914,7 +915,7 @@ function LoginScreen() {
     setLoading(false);
   }
   return(
-    <div style={{minHeight:"100vh",background:"#0f0e0b",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif"}}>
+    <div style={{minHeight:"100vh",background:"#080806",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif"}}>
       <div style={{background:"#1a1710",border:"1px solid #3a3520",borderRadius:16,padding:32,width:320,maxWidth:"90vw"}}>
         <div style={{textAlign:"center",marginBottom:24}}>
           <img src={require("./logo.png")} alt="Logo" style={{height:60,borderRadius:8,objectFit:"contain",marginBottom:12}}/>
@@ -1204,7 +1205,7 @@ function Dashboard() {
               <div style={{fontSize:10,color:"#5a5240",marginBottom:8}}>Ventas hoy</div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:8}}>
                 {[["💵",c.ventas,"#4caf82"],["💳",c.ventas_tarjeta,"#7ac8f0"],["📱",c.ventas_bizum,"#a78bfa"],["🔵",c.ventas_sumup,"#f59e42"]].map(([emoji,val,color])=>(
-                  <div key={emoji} style={{textAlign:"center",background:"#0f0e0b",borderRadius:6,padding:"5px 4px"}}>
+                  <div key={emoji} style={{textAlign:"center",background:"#080806",borderRadius:6,padding:"5px 4px"}}>
                     <div style={{fontSize:12}}>{emoji}</div>
                     <div style={{fontSize:10,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
                   </div>
@@ -1242,7 +1243,7 @@ function Dashboard() {
       </div>
 
       {/* Gráfica semana */}
-      <div style={{background:"#141210",border:"1px solid #2e2b22",borderRadius:14,padding:16,marginBottom:20}}>
+      <div style={{background:"#0a0908",border:"1px solid #1a1815",borderRadius:14,padding:16,marginBottom:20}}>
         <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase",marginBottom:14}}>Ventas últimos 7 días</div>
         <div style={{display:"flex",alignItems:"flex-end",gap:6,height:100}}>
           {diasSemana.map((d,i)=>(
@@ -1264,7 +1265,7 @@ function Dashboard() {
       </div>
 
       {/* Mes actual */}
-      <div style={{background:"#141210",border:"1px solid #2e2b22",borderRadius:14,padding:16}}>
+      <div style={{background:"#0a0908",border:"1px solid #1a1815",borderRadius:14,padding:16}}>
         <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase",marginBottom:12}}>{MESES[month-1]} {year} · Acumulado</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
           {[[nombre1,ingL1,"#c9a84c"],[nombre2,ingL2,"#6a9fd8"],["Total",ingL1+ingL2,"#f0e8d0"]].map(([nombre,val,color])=>(
@@ -1289,15 +1290,15 @@ export default function App() {
     return()=>unsub();
   },[]);
   if(checkingAuth) return(
-    <div style={{minHeight:"100vh",background:"#0f0e0b",display:"flex",alignItems:"center",justifyContent:"center"}}>
+    <div style={{minHeight:"100vh",background:"#080806",display:"flex",alignItems:"center",justifyContent:"center"}}>
       <div style={{color:"#6a6047",fontFamily:"Georgia,serif",fontSize:13,letterSpacing:2}}>Cargando...</div>
     </div>
   );
   if(!user && showWelcome) return <WelcomeScreen onEntrar={()=>setShowWelcome(false)}/>;
   if(!user) return <LoginScreen/>;
   return(
-    <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#0f0e0b",color:"#e8e0cc",padding:"0 0 60px"}}>
-      <div style={{background:"#1a1710",borderBottom:"1px solid #2e2b22",padding:"10px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+    <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#080806",color:"#e8e0cc",padding:"0 0 60px"}}>
+      <div style={{background:"#0d0c0a",borderBottom:"1px solid #1a1815",padding:"10px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <img src={require("./logo.png")} alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
           <div>
@@ -1337,6 +1338,6 @@ export default function App() {
   );
 }
 
-const inp={background:"#151310",border:"1px solid #2e2b22",borderRadius:7,padding:"9px 11px",color:"#e8e0cc",fontSize:12,outline:"none",fontFamily:"Georgia,serif"};
+const inp={background:"#0d0c0a",border:"1px solid #1a1815",borderRadius:7,padding:"9px 11px",color:"#e8e0cc",fontSize:12,outline:"none",fontFamily:"Georgia,serif"};
 const btnPri={border:"none",color:"#0f0e0b",padding:"9px 16px",borderRadius:7,fontSize:12,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"};
 const btnSec={background:"transparent",border:"1px solid #3a3520",color:"#8a7f5e",padding:"9px 12px",borderRadius:7,fontSize:12,cursor:"pointer",whiteSpace:"nowrap"};
