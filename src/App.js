@@ -1189,7 +1189,7 @@ function Dashboard() {
   const maxSemana = Math.max(...diasSemana.map(d=>d.total), 1);
 
   return(
-    <div style={{maxWidth:820,margin:"0 auto",padding:"18px 12px"}}>
+    <div style={{maxWidth:1400,margin:"0 auto",padding:window.innerWidth<768?"18px 12px":"20px 32px"}}>
 
       {/* Bienvenida */}
       <div style={{marginBottom:20}}>
@@ -1289,6 +1289,13 @@ export default function App() {
   const [user,setUser]=useState(null);
   const [checkingAuth,setCheckingAuth]=useState(true);
   const [showWelcome,setShowWelcome]=useState(true);
+  const [isMobile,setIsMobile]=useState(window.innerWidth < 768);
+
+  useEffect(()=>{
+    const handleResize=()=>setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize",handleResize);
+    return()=>window.removeEventListener("resize",handleResize);
+  },[]);
   useEffect(()=>{
     const unsub=onAuthStateChanged(auth,(u)=>{setUser(u);setCheckingAuth(false);});
     return()=>unsub();
@@ -1302,7 +1309,7 @@ export default function App() {
   if(!user) return <LoginScreen/>;
   return(
     <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#080806",color:"#e8e0cc",padding:"0 0 60px"}}>
-      <div style={{background:"#0d0c0a",borderBottom:"1px solid #1a1815",padding:"10px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <div style={{background:"#0d0c0a",borderBottom:"1px solid #1a1815",padding:isMobile?"10px 14px":"10px 32px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <img src={require("./logo.png")} alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
           <div>
@@ -1324,15 +1331,15 @@ export default function App() {
           </button>
         ))}
       </div>
-      <div style={{maxWidth:820,margin:"0 auto",padding:"10px 8px"}}>
+      <div style={{maxWidth:isMobile?820:1400,margin:"0 auto",padding:isMobile?"10px 8px":"20px 32px"}}>
         {mainTab==="dashboard"&&<Dashboard/>}
         {mainTab==="caja"&&<>
           <ResumenConsolidado/>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:isMobile?6:20}}>
             {LOCALES.map(local=><CajaLocal key={local.id} local={local} user={user}/>)}
           </div>
         </>}
-        {mainTab==="fuerte"&&<CajaFuerte/>}
+        {mainTab==="fuerte"&&<div style={{maxWidth:isMobile?"100%":800,margin:"0 auto"}}><CajaFuerte/></div>}
         {mainTab==="informes"&&<Informes/>}
         <div style={{marginTop:12,display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
           <span style={{fontSize:9,color:"#c9a84c"}}>✏️ Toca el nombre para renombrarlo</span>
