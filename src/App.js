@@ -1130,7 +1130,7 @@ function CajaFuerte() {
 // ─────────────────────────────────────────────
 // DASHBOARD
 // ─────────────────────────────────────────────
-function Dashboard() {
+function Dashboard({isMobile}) {
   const today = getDateKey();
   const now = new Date();
   const year = now.getFullYear();
@@ -1189,7 +1189,7 @@ function Dashboard() {
   const maxSemana = Math.max(...diasSemana.map(d=>d.total), 1);
 
   return(
-    <div style={{maxWidth:1400,margin:"0 auto",padding:window.innerWidth<768?"18px 12px":"20px 32px"}}>
+    <div style={{maxWidth:1400,margin:"0 auto",padding:isMobile?"18px 12px":"20px 32px"}}>
 
       {/* Bienvenida */}
       <div style={{marginBottom:20}}>
@@ -1198,8 +1198,8 @@ function Dashboard() {
         <div style={{fontSize:11,color:"#8a7f5e"}}>Semana {weekNum}</div>
       </div>
 
-      {/* Tarjetas resumen hoy */}
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
+      {/* Tarjetas resumen hoy + Total consolidado */}
+      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"1fr 1fr 1fr",gap:12,marginBottom:20,alignItems:"stretch"}}>
         {datosHoy.map(({local,nombre,c,cy})=>{
           const dif = c.totalVentas - cy.totalVentas;
           return(
@@ -1221,64 +1221,70 @@ function Dashboard() {
             </div>
           );
         })}
-      </div>
 
-      {/* Total consolidado hoy */}
-      <div style={{background:"#1a1710",border:"1px solid #3a3520",borderRadius:14,padding:"14px 18px",marginBottom:20}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-          <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase"}}>Total Ambos Locales · Hoy</div>
-          <div style={{fontSize:10,color:difAyer>=0?"#4caf82":"#c0503a"}}>
-            {difAyer>=0?"▲":"▼"} {formatCurrency(Math.abs(difAyer))} vs ayer
+        {/* Total consolidado hoy */}
+        <div style={{background:"#1a1710",border:"1px solid #3a3520",borderRadius:14,padding:"14px 18px",gridColumn:isMobile?"1 / -1":"auto",display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+          <div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase"}}>Total Ambos Locales · Hoy</div>
+              <div style={{fontSize:10,color:difAyer>=0?"#4caf82":"#c0503a"}}>
+                {difAyer>=0?"▲":"▼"} {formatCurrency(Math.abs(difAyer))} vs ayer
+              </div>
+            </div>
+            <div style={{fontSize:28,color:"#c9a84c",fontWeight:"bold",marginBottom:4}}>{formatCurrency(totalHoyVentas)}</div>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:8,marginTop:10}}>
+            {[["💵 Efectivo",datosHoy.reduce((s,d)=>s+d.c.ventas,0),"#4caf82"],
+              ["💳 Tarjeta",datosHoy.reduce((s,d)=>s+d.c.ventas_tarjeta,0),"#7ac8f0"],
+              ["📱 Bizum",datosHoy.reduce((s,d)=>s+d.c.ventas_bizum,0),"#a78bfa"],
+              ["🔵 SumUp",datosHoy.reduce((s,d)=>s+d.c.ventas_sumup,0),"#f59e42"]
+            ].map(([label,val,color])=>(
+              <div key={label} style={{textAlign:"center"}}>
+                <div style={{fontSize:9,color:"#5a5240",marginBottom:3}}>{label}</div>
+                <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
+              </div>
+            ))}
           </div>
         </div>
-        <div style={{fontSize:28,color:"#c9a84c",fontWeight:"bold",marginBottom:4}}>{formatCurrency(totalHoyVentas)}</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:8,marginTop:10}}>
-          {[["💵 Efectivo",datosHoy.reduce((s,d)=>s+d.c.ventas,0),"#4caf82"],
-            ["💳 Tarjeta",datosHoy.reduce((s,d)=>s+d.c.ventas_tarjeta,0),"#7ac8f0"],
-            ["📱 Bizum",datosHoy.reduce((s,d)=>s+d.c.ventas_bizum,0),"#a78bfa"],
-            ["🔵 SumUp",datosHoy.reduce((s,d)=>s+d.c.ventas_sumup,0),"#f59e42"]
-          ].map(([label,val,color])=>(
-            <div key={label} style={{textAlign:"center"}}>
-              <div style={{fontSize:9,color:"#5a5240",marginBottom:3}}>{label}</div>
-              <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
-            </div>
-          ))}
-        </div>
       </div>
 
-      {/* Gráfica semana */}
-      <div style={{background:"#0a0908",border:"1px solid #1a1815",borderRadius:14,padding:16,marginBottom:20}}>
-        <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase",marginBottom:14}}>Ventas últimos 7 días</div>
-        <div style={{display:"flex",alignItems:"flex-end",gap:6,height:100}}>
-          {diasSemana.map((d,i)=>(
-            <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-              <div style={{fontSize:9,color:d.esHoy?"#c9a84c":"#5a5240"}}>{formatCurrencyShort(d.total)}</div>
-              <div style={{width:"100%",display:"flex",flexDirection:"column",gap:1,flex:1,justifyContent:"flex-end"}}>
-                <div style={{width:"100%",background:"#6a9fd8",borderRadius:"3px 3px 0 0",height:`${(d.local2/maxSemana)*60}px`,minHeight:d.local2>0?3:0}}/>
-                <div style={{width:"100%",background:"#c9a84c",borderRadius:d.local2>0?"0":"3px 3px 0 0",height:`${(d.local1/maxSemana)*60}px`,minHeight:d.local1>0?3:0}}/>
+      <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"2fr 1fr",gap:16}}>
+
+        {/* Gráfica semana */}
+        <div style={{background:"#0a0908",border:"1px solid #1a1815",borderRadius:14,padding:16,marginBottom:isMobile?20:0}}>
+          <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase",marginBottom:14}}>Ventas últimos 7 días</div>
+          <div style={{display:"flex",alignItems:"flex-end",gap:6,height:100}}>
+            {diasSemana.map((d,i)=>(
+              <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+                <div style={{fontSize:9,color:d.esHoy?"#c9a84c":"#5a5240"}}>{formatCurrencyShort(d.total)}</div>
+                <div style={{width:"100%",display:"flex",flexDirection:"column",gap:1,flex:1,justifyContent:"flex-end"}}>
+                  <div style={{width:"100%",background:"#6a9fd8",borderRadius:"3px 3px 0 0",height:`${(d.local2/maxSemana)*60}px`,minHeight:d.local2>0?3:0}}/>
+                  <div style={{width:"100%",background:"#c9a84c",borderRadius:d.local2>0?"0":"3px 3px 0 0",height:`${(d.local1/maxSemana)*60}px`,minHeight:d.local1>0?3:0}}/>
+                </div>
+                <div style={{fontSize:9,color:d.esHoy?"#c9a84c":"#5a5240",fontWeight:d.esHoy?"bold":"normal"}}>{d.dia}</div>
+                {d.esHoy&&<div style={{width:4,height:4,borderRadius:"50%",background:"#c9a84c"}}/>}
               </div>
-              <div style={{fontSize:9,color:d.esHoy?"#c9a84c":"#5a5240",fontWeight:d.esHoy?"bold":"normal"}}>{d.dia}</div>
-              {d.esHoy&&<div style={{width:4,height:4,borderRadius:"50%",background:"#c9a84c"}}/>}
-            </div>
-          ))}
+            ))}
+          </div>
+          <div style={{display:"flex",gap:16,marginTop:10,justifyContent:"center"}}>
+            <div style={{display:"flex",alignItems:"center",gap:4}}><div style={{width:10,height:10,background:"#c9a84c",borderRadius:2}}/><span style={{fontSize:10,color:"#8a7f5e"}}>{nombre1}</span></div>
+            <div style={{display:"flex",alignItems:"center",gap:4}}><div style={{width:10,height:10,background:"#6a9fd8",borderRadius:2}}/><span style={{fontSize:10,color:"#8a7f5e"}}>{nombre2}</span></div>
+          </div>
         </div>
-        <div style={{display:"flex",gap:16,marginTop:10,justifyContent:"center"}}>
-          <div style={{display:"flex",alignItems:"center",gap:4}}><div style={{width:10,height:10,background:"#c9a84c",borderRadius:2}}/><span style={{fontSize:10,color:"#8a7f5e"}}>{nombre1}</span></div>
-          <div style={{display:"flex",alignItems:"center",gap:4}}><div style={{width:10,height:10,background:"#6a9fd8",borderRadius:2}}/><span style={{fontSize:10,color:"#8a7f5e"}}>{nombre2}</span></div>
-        </div>
-      </div>
 
-      {/* Mes actual */}
-      <div style={{background:"#0a0908",border:"1px solid #1a1815",borderRadius:14,padding:16}}>
-        <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase",marginBottom:12}}>{MESES[month-1]} {year} · Acumulado</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
-          {[[nombre1,ingL1,"#c9a84c"],[nombre2,ingL2,"#6a9fd8"],["Total",ingL1+ingL2,"#f0e8d0"]].map(([nombre,val,color])=>(
-            <div key={nombre} style={{textAlign:"center"}}>
-              <div style={{fontSize:9,color:"#5a5240",marginBottom:4}}>{nombre}</div>
-              <div style={{fontSize:15,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
-            </div>
-          ))}
+        {/* Mes actual */}
+        <div style={{background:"#0a0908",border:"1px solid #1a1815",borderRadius:14,padding:16}}>
+          <div style={{fontSize:10,letterSpacing:2,color:"#6a6047",textTransform:"uppercase",marginBottom:12}}>{MESES[month-1]} {year} · Acumulado</div>
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr 1fr 1fr":"1fr",gap:isMobile?12:14}}>
+            {[[nombre1,ingL1,"#c9a84c"],[nombre2,ingL2,"#6a9fd8"],["Total",ingL1+ingL2,"#f0e8d0"]].map(([nombre,val,color])=>(
+              <div key={nombre} style={{textAlign:isMobile?"center":"left",display:isMobile?"block":"flex",justifyContent:isMobile?"normal":"space-between",alignItems:isMobile?"normal":"center"}}>
+                <div style={{fontSize:9,color:"#5a5240",marginBottom:isMobile?4:0}}>{nombre}</div>
+                <div style={{fontSize:15,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
+              </div>
+            ))}
+          </div>
         </div>
+
       </div>
     </div>
   );
@@ -1332,7 +1338,7 @@ export default function App() {
         ))}
       </div>
       <div style={{maxWidth:isMobile?820:1400,margin:"0 auto",padding:isMobile?"10px 8px":"20px 32px"}}>
-        {mainTab==="dashboard"&&<Dashboard/>}
+        {mainTab==="dashboard"&&<Dashboard isMobile={isMobile}/>}
         {mainTab==="caja"&&<>
           <ResumenConsolidado/>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:isMobile?6:20}}>
