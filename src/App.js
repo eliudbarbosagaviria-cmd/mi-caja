@@ -1133,7 +1133,7 @@ function CajaFuerte() {
 // ─────────────────────────────────────────────
 // DASHBOARD
 // ─────────────────────────────────────────────
-function Dashboard() {
+function Dashboard({isMobile}) {
   const today = getDateKey();
   const now = new Date();
   const year = now.getFullYear();
@@ -1335,7 +1335,7 @@ export default function App() {
         ))}
       </div>
       <div style={{maxWidth:isMobile?820:1400,margin:"0 auto",padding:isMobile?"10px 8px":"20px 32px"}}>
-        {mainTab==="dashboard"&&<Dashboard/>}
+        {mainTab==="dashboard"&&<Dashboard isMobile={isMobile}/>}
         {mainTab==="caja"&&<>
           <ResumenConsolidado/>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:isMobile?6:20}}>
