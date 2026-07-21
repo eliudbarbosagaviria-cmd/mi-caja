@@ -239,17 +239,17 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:10}}>
         <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
           <div style={{fontSize:9,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Base de caja</div>
-          <div style={{fontSize:13,color:"#1a1812",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor-calc.ventas-calc.depositos+calc.gastos+calc.retiros)}</div>
+          <div style={{fontSize:13,color:"#2c2a22",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor-calc.ventas-calc.depositos+calc.gastos+calc.retiros)}</div>
         </div>
         <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
           <div style={{fontSize:9,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Teórica</div>
-          <div style={{fontSize:14,color:"#1a1812",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor)}</div>
+          <div style={{fontSize:14,color:"#2c2a22",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor)}</div>
           <div style={{fontSize:8,color:"#8a8268",marginTop:2}}>= Base + Vtas − Gas</div>
         </div>
         <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
           <div style={{fontSize:9,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Real</div>
           {cajaReal!==null&&!editando
-            ?<div style={{fontSize:14,color:"#1a1812",fontWeight:"bold",cursor:editable?"pointer":"default"}} onClick={()=>editable&&setEditando(true)}>{formatCurrency(cajaReal)}</div>
+            ?<div style={{fontSize:14,color:"#2c2a22",fontWeight:"bold",cursor:editable?"pointer":"default"}} onClick={()=>editable&&setEditando(true)}>{formatCurrency(cajaReal)}</div>
             :editando
               ?<div style={{display:"flex",gap:4,justifyContent:"center"}}>
                 <input type="number" value={inputVal} onChange={e=>setInputVal(e.target.value)} onKeyDown={e=>e.key==="Enter"&&guardar()} style={{...inp,width:70,padding:"4px 6px",fontSize:11}} autoFocus/>
@@ -286,7 +286,7 @@ function ResumenDiario({localId,dateKey,onClose}) {
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
           <div>
             <div style={{fontSize:10,letterSpacing:2,color:"#8a8268",textTransform:"uppercase"}}>Resumen Diario</div>
-            <div style={{fontSize:14,color:"#1a1812"}}>{nombre} · {formatDate(dateKey)}</div>
+            <div style={{fontSize:14,color:"#2c2a22"}}>{nombre} · {formatDate(dateKey)}</div>
             <div style={{fontSize:10,color:"#8a8268"}}>Semana {getWeekNumber(dateKey)}</div>
           </div>
           <button onClick={onClose} style={{background:"transparent",border:"none",color:"#8a8268",fontSize:20,cursor:"pointer"}}>×</button>
@@ -300,7 +300,7 @@ function ResumenDiario({localId,dateKey,onClose}) {
             </div>
           ))}
           <div style={{display:"flex",justifyContent:"space-between",paddingTop:4}}>
-            <span style={{fontSize:12,color:"#1a1812",fontWeight:"bold"}}>= Caja Teórica</span>
+            <span style={{fontSize:12,color:"#2c2a22",fontWeight:"bold"}}>= Caja Teórica</span>
             <span style={{fontSize:15,color:"#8a6f24",fontWeight:"bold"}}>{formatCurrency(c.cajaTeor)}</span>
           </div>
         </div>
@@ -308,7 +308,7 @@ function ResumenDiario({localId,dateKey,onClose}) {
           <div style={{background:c.diferencia!==0?"#fbe2de":"#dff0e3",border:`1px solid ${c.diferencia!==0?"#d99a8f":"#8fc9a8"}`,borderRadius:10,padding:14,marginBottom:14}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
               <span style={{fontSize:11,color:"#7a7258"}}>Caja Real</span>
-              <span style={{fontSize:13,color:"#1a1812",fontWeight:"bold"}}>{formatCurrency(c.cajaReal)}</span>
+              <span style={{fontSize:13,color:"#2c2a22",fontWeight:"bold"}}>{formatCurrency(c.cajaReal)}</span>
             </div>
             <div style={{display:"flex",justifyContent:"space-between"}}>
               <span style={{fontSize:11,color:"#7a7258"}}>Diferencia</span>
@@ -359,7 +359,7 @@ function CalendarioMes({localId,onSelectDate,selectedDate,accent}) {
     <div style={{background:"#e8e4d8",border:"1px solid #d4cfba",borderRadius:12,padding:14,marginBottom:14}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
         <button onClick={prevMonth} style={{background:"transparent",border:"none",color:"#8a8268",cursor:"pointer",fontSize:16,padding:"0 6px"}}>‹</button>
-        <div style={{fontSize:13,color:"#1a1812",fontWeight:"bold"}}>{MESES[month-1]} {year}</div>
+        <div style={{fontSize:13,color:"#2c2a22",fontWeight:"bold"}}>{MESES[month-1]} {year}</div>
         <button onClick={nextMonth} style={{background:"transparent",border:"none",color:month===now.getMonth()+1&&year===now.getFullYear()?"#d4cfba":"#8a8268",cursor:"pointer",fontSize:16,padding:"0 6px"}}>›</button>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"44px repeat(7,1fr)",gap:2,marginBottom:4}}>
@@ -509,7 +509,7 @@ function Informes() {
             <BarChart data={dias}><CartesianGrid strokeDasharray="3 3" stroke="#d4cfba"/>
               <XAxis dataKey="dia" tick={{fill:"#7a7258",fontSize:9}} axisLine={false} tickLine={false}/>
               <YAxis tick={{fill:"#7a7258",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
-              <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10,color:"#1a1812"}}/>
+              <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10,color:"#2c2a22"}}/>
               <Bar dataKey={nombre1} fill="#8a6f24" radius={[3,3,0,0]}/><Bar dataKey={nombre2} fill="#3a6fa0" radius={[3,3,0,0]}/>
             </BarChart>
           </ResponsiveContainer>
@@ -808,12 +808,12 @@ function CajaLocal({local, user}) {
           {dayData.movimientos.slice().reverse().map(mov=>{
             const info=TIPOS_MOV[mov.tipo]||{color:"#7a7258",signo:1};
             return(
-              <div key={mov.id} style={{background:"#ece8da",border:"1px solid #1a1812",borderRadius:8,padding:"9px 11px",marginBottom:5,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <div key={mov.id} style={{background:"#ece8da",border:"1px solid #f3efe2",borderRadius:8,padding:"9px 11px",marginBottom:5,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
                   <div style={{width:7,height:7,borderRadius:"50%",background:info.color,flexShrink:0}}/>
                   <div>
                     <div style={{fontSize:11,color:"#5c5640"}}>{mov.descripcion}</div>
-                    <div style={{fontSize:9}}><span style={{color:"#7a7258"}}>{mov.categoria}</span><span style={{color:"#1a1812",fontWeight:"bold"}}> · {mov.hora}</span></div>
+                    <div style={{fontSize:9}}><span style={{color:"#7a7258"}}>{mov.categoria}</span><span style={{color:"#2c2a22",fontWeight:"bold"}}> · {mov.hora}</span></div>
                   </div>
                 </div>
                 <div style={{display:"flex",alignItems:"center",gap:7}}>
@@ -891,7 +891,7 @@ function WelcomeScreen({onEntrar}) {
         {/* Mensaje */}
         <div style={{background:"#ece0bd",border:"1px solid #8a6f2433",borderRadius:16,padding:24,marginBottom:32}}>
           <div style={{fontSize:10,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",marginBottom:12}}>Mensaje</div>
-          <div style={{fontSize:13,color:"#1a1812",lineHeight:1.8,fontStyle:"italic"}}>
+          <div style={{fontSize:13,color:"#2c2a22",lineHeight:1.8,fontStyle:"italic"}}>
             "Bienvenido al equipo de Entre Pues. Recuerda registrar cada movimiento de caja con precisión. Juntos hacemos que el negocio funcione."
           </div>
         </div>
@@ -1107,12 +1107,12 @@ function CajaFuerte() {
             <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
               <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
               <div>
-                <div style={{ fontSize: 12, color: "#1a1812" }}>{mov.descripcion}</div>
+                <div style={{ fontSize: 12, color: "#f3efe2" }}>{mov.descripcion}</div>
                 <div style={{ fontSize: 10, color: "#8a8268" }}>
                   <span style={{ color: localColor, fontWeight:"bold" }}>{mov.nombreOrigen}</span>
                   {mov.tipo === "salida" && mov.motivo && <span style={{ color: "#a3392a" }}> · {mov.motivo}</span>}
                   <span style={{ color:"#7a7258" }}> · {formatDateShort(mov.fecha)}</span>
-                  <span style={{ color:"#1a1812", fontWeight:"bold" }}> · {mov.hora}</span>
+                  <span style={{ color:"#2c2a22", fontWeight:"bold" }}> · {mov.hora}</span>
                 </div>
               </div>
             </div>
@@ -1203,7 +1203,7 @@ function Dashboard() {
         {datosHoy.map(({local,nombre,c,cy})=>{
           const dif = c.totalVentas - cy.totalVentas;
           return(
-            <div key={local.id} style={{background:"#1a1812",border:`1px solid ${local.color}33`,borderRadius:14,padding:16}}>
+            <div key={local.id} style={{background:"#f3efe2",border:`1px solid ${local.color}33`,borderRadius:14,padding:16}}>
               <div style={{fontSize:10,color:local.color,letterSpacing:1,marginBottom:8,fontWeight:"bold"}}>{local.emoji} {nombre}</div>
               <div style={{fontSize:24,color:"#2c2a22",fontWeight:"bold",marginBottom:4}}>{formatCurrency(c.totalVentas)}</div>
               <div style={{fontSize:10,color:"#7a7258",marginBottom:8}}>Ventas hoy</div>
@@ -1323,7 +1323,7 @@ export default function App() {
           <div style={{fontSize:10,color:"#8a8268"}}>{new Date().toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}</div>
         </div>
       </div>
-      <div style={{display:"flex",borderBottom:"1px solid #d4cfba",background:"#1a1812"}}>
+      <div style={{display:"flex",borderBottom:"1px solid #d4cfba",background:"#f3efe2"}}>
         {[["dashboard","🏠 Inicio"],["caja","💼 Caja"],["fuerte","🔒 Fuerte"],["informes","📋 Informes"]].map(([k,label])=>(
           <button key={k} onClick={()=>setMainTab(k)}
             style={{flex:1,padding:"11px 0",background:"transparent",border:"none",borderBottom:mainTab===k?"2px solid #8a6f24":"2px solid transparent",color:mainTab===k?"#8a6f24":"#8a8268",fontSize:10,cursor:"pointer",letterSpacing:1}}>
