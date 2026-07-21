@@ -244,7 +244,7 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
         <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
           <div style={{fontSize:9,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Teórica</div>
           <div style={{fontSize:14,color:"#2c2a22",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor)}</div>
-          <div style={{fontSize:8,color:"#8a8268",marginTop:2}}>= Base + Vtas − Gas</div>
+          <div style={{fontSize:10,color:"#2c2a22",fontWeight:"bold",marginTop:4}}>= Base + Vtas − Gas</div>
         </div>
         <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
           <div style={{fontSize:9,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Real</div>
