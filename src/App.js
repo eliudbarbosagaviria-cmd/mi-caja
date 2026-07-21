@@ -238,19 +238,19 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
   const bgMsg=esPositivo?"#cce8d2":"#fad9d3";
   return(
     <div style={{background:bgColor,border:`1px solid ${borderColor}`,borderRadius:10,padding:"12px 14px",marginBottom:14}}>
-      <div style={{fontSize:10,letterSpacing:2,color:"#8a6f24",textTransform:"uppercase",marginBottom:10,fontWeight:"bold"}}>Arqueo de Caja</div>
+      <div style={{fontSize:isMobile?12:14,letterSpacing:2,color:"#8a6f24",textTransform:"uppercase",marginBottom:10,fontWeight:"bold"}}>Arqueo de Caja</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:10}}>
         <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
-          <div style={{fontSize:9,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Base de caja</div>
+          <div style={{fontSize:isMobile?10:11,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Base de caja</div>
           <div style={{fontSize:13,color:"#2c2a22",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor-calc.ventas-calc.depositos+calc.gastos+calc.retiros)}</div>
         </div>
         <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
-          <div style={{fontSize:9,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Teórica</div>
+          <div style={{fontSize:isMobile?10:11,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Teórica</div>
           <div style={{fontSize:14,color:"#2c2a22",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor)}</div>
           <div style={{fontSize:10,color:"#2c2a22",fontWeight:"bold",marginTop:4}}>= Base + Vtas − Gas</div>
         </div>
         <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
-          <div style={{fontSize:9,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Real</div>
+          <div style={{fontSize:isMobile?10:11,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Real</div>
           {cajaReal!==null&&!editando
             ?<div style={{fontSize:14,color:"#2c2a22",fontWeight:"bold",cursor:editable?"pointer":"default"}} onClick={()=>editable&&setEditando(true)}>{formatCurrency(cajaReal)}</div>
             :editando
@@ -512,7 +512,7 @@ function Informes() {
             <BarChart data={dias}><CartesianGrid strokeDasharray="3 3" stroke="#d4cfba"/>
               <XAxis dataKey="dia" tick={{fill:"#7a7258",fontSize:9}} axisLine={false} tickLine={false}/>
               <YAxis tick={{fill:"#7a7258",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
-              <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10,color:"#2c2a22"}}/>
+              <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:13,color:"#2c2a22"}}/>
               <Bar dataKey={nombre1} fill="#8a6f24" radius={[3,3,0,0]}/><Bar dataKey={nombre2} fill="#3a6fa0" radius={[3,3,0,0]}/>
             </BarChart>
           </ResponsiveContainer>
@@ -695,14 +695,14 @@ function CajaLocal({local, user}) {
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <span style={{fontSize:20}}>{local.emoji}</span>
           <div>
-            <div style={{fontSize:10,letterSpacing:2,color:accent+"aa",textTransform:"uppercase"}}>Local</div>
+            <div style={{fontSize:isMobile?11:12,letterSpacing:2,color:accent+"aa",textTransform:"uppercase"}}>Local</div>
             <div style={{fontSize:15,color:accent,fontWeight:"bold"}}><LocalNameEditor local={local} onSave={setLocalNombre}/></div>
           </div>
         </div>
         <div style={{textAlign:"right"}}>
           <div style={{fontSize:19,color:calc.cajaTeor>=0?"#236b46":"#a3392a",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor)}</div>
-          <div style={{fontSize:9,color:"#7a7258",letterSpacing:1}}>CAJA TEÓRICA · {isToday?"HOY":formatDateShort(viewDate).toUpperCase()}</div>
-          {hayDescuadre&&<div style={{fontSize:10,color:"#a3392a"}}>⚠ Descuadre {formatCurrency(calc.diferencia)}</div>}
+          <div style={{fontSize:isMobile?10:11,color:"#7a7258",letterSpacing:1}}>CAJA TEÓRICA · {isToday?"HOY":formatDateShort(viewDate).toUpperCase()}</div>
+          {hayDescuadre&&<div style={{fontSize:isMobile?11:12,color:"#a3392a"}}>⚠ Descuadre {formatCurrency(calc.diferencia)}</div>}
         </div>
       </div>
       <div style={{display:"flex",borderBottom:"1px solid #d4cfba"}}>
@@ -715,7 +715,7 @@ function CajaLocal({local, user}) {
       </div>
       <div style={{padding:10}}>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,flexWrap:"wrap"}}>
-          <span style={{background:accent+"22",border:`1px solid ${accent}44`,color:accent,borderRadius:20,padding:"3px 10px",fontSize:10,letterSpacing:1,fontWeight:"bold"}}>Semana {semana}</span>
+          <span style={{background:accent+"22",border:`1px solid ${accent}44`,color:accent,borderRadius:20,padding:"3px 10px",fontSize:isMobile?11:12,letterSpacing:1,fontWeight:"bold"}}>Semana {semana}</span>
           <span style={{fontSize:11,color:"#8a8268"}}>{formatDateShort(viewDate)}{isToday?" · Hoy":""}</span>
           {dayData.cerrado&&<span style={{fontSize:10,color:accent}}>· Cerrada ✓</span>}
           <button onClick={()=>setShowResumen(true)} style={{marginLeft:"auto",background:"transparent",border:"1px solid #d4cfba",color:"#8a8268",padding:"3px 10px",borderRadius:20,fontSize:10,cursor:"pointer"}}>📄 Ver resumen</button>
@@ -724,7 +724,7 @@ function CajaLocal({local, user}) {
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:6}}>
           {[["💵 Efectivo",calc.ventas,"#236b46"],["💳 Tarjeta",calc.ventas_tarjeta,"#1f6f9e"],["📱 Bizum",calc.ventas_bizum,"#6a4eb8"],["🔵 SumUp",calc.ventas_sumup,"#a3650f"]].map(([label,val,color])=>(
             <div key={label} style={{background:"#f3efe2",border:`1px solid ${color}44`,borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
-              <div style={{fontSize:9,letterSpacing:1,color,marginBottom:3,fontWeight:"bold"}}>{label}</div>
+              <div style={{fontSize:isMobile?11:12,letterSpacing:1,color,marginBottom:3,fontWeight:"bold"}}>{label}</div>
               <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
           ))}
@@ -732,7 +732,7 @@ function CajaLocal({local, user}) {
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:12}}>
           {[["Depósitos",calc.depositos,"#1f7a8a"],["Gastos",calc.gastos,"#a3392a"],["Retiros",calc.retiros,"#a3621f"]].map(([label,val,color])=>(
             <div key={label} style={{background:"#f3efe2",border:`1px solid ${color}44`,borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
-              <div style={{fontSize:9,letterSpacing:1,color,marginBottom:3,fontWeight:"bold"}}>{label}</div>
+              <div style={{fontSize:isMobile?11:12,letterSpacing:1,color,marginBottom:3,fontWeight:"bold"}}>{label}</div>
               <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
           ))}
@@ -1255,12 +1255,12 @@ function Dashboard() {
         <div style={{display:"flex",alignItems:"flex-end",gap:6,height:100}}>
           {diasSemana.map((d,i)=>(
             <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-              <div style={{fontSize:9,color:d.esHoy?"#8a6f24":"#8a8268"}}>{formatCurrencyShort(d.total)}</div>
+              <div style={{fontSize:isMobile?11:12,color:d.esHoy?"#8a6f24":"#8a8268"}}>{formatCurrencyShort(d.total)}</div>
               <div style={{width:"100%",display:"flex",flexDirection:"column",gap:1,flex:1,justifyContent:"flex-end"}}>
                 <div style={{width:"100%",background:"#3a6fa0",borderRadius:"3px 3px 0 0",height:`${(d.local2/maxSemana)*60}px`,minHeight:d.local2>0?3:0}}/>
                 <div style={{width:"100%",background:"#8a6f24",borderRadius:d.local2>0?"0":"3px 3px 0 0",height:`${(d.local1/maxSemana)*60}px`,minHeight:d.local1>0?3:0}}/>
               </div>
-              <div style={{fontSize:9,color:d.esHoy?"#8a6f24":"#8a8268",fontWeight:d.esHoy?"bold":"normal"}}>{d.dia}</div>
+              <div style={{fontSize:isMobile?11:12,color:d.esHoy?"#8a6f24":"#8a8268",fontWeight:d.esHoy?"bold":"normal"}}>{d.dia}</div>
               {d.esHoy&&<div style={{width:4,height:4,borderRadius:"50%",background:"#8a6f24"}}/>}
             </div>
           ))}
@@ -1273,7 +1273,7 @@ function Dashboard() {
 
       {/* Mes actual */}
       <div style={{background:"#f3efe2",border:"1px solid #d4cfba",borderRadius:14,padding:16}}>
-        <div style={{fontSize:10,letterSpacing:2,color:"#8a8268",textTransform:"uppercase",marginBottom:12}}>{MESES[month-1]} {year} · Acumulado</div>
+        <div style={{fontSize:isMobile?12:13,letterSpacing:2,color:"#8a8268",textTransform:"uppercase",marginBottom:12}}>{MESES[month-1]} {year} · Acumulado</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
           {[[nombre1,ingL1,"#8a6f24"],[nombre2,ingL2,"#3a6fa0"],["Total",ingL1+ingL2,"#2c2a22"]].map(([nombre,val,color])=>(
             <div key={nombre} style={{textAlign:"center"}}>
@@ -1345,9 +1345,9 @@ export default function App() {
         {mainTab==="fuerte"&&<div style={{maxWidth:isMobile?"100%":800,margin:"0 auto"}}><CajaFuerte/></div>}
         {mainTab==="informes"&&<Informes/>}
         <div style={{marginTop:12,display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
-          <span style={{fontSize:9,color:"#8a6f24"}}>✏️ Toca el nombre para renombrarlo</span>
-          <span style={{fontSize:9,color:"#236b46"}}>● Día con datos</span>
-          <span style={{fontSize:9,color:"#a3392a"}}>● Descuadre</span>
+          <span style={{fontSize:isMobile?11:12,color:"#8a6f24"}}>✏️ Toca el nombre para renombrarlo</span>
+          <span style={{fontSize:isMobile?11:12,color:"#236b46"}}>● Día con datos</span>
+          <span style={{fontSize:isMobile?11:12,color:"#a3392a"}}>● Descuadre</span>
         </div>
       </div>
     </div>
