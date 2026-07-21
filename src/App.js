@@ -231,8 +231,11 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
   function guardar(){const v=parseFloat(inputVal);if(!isNaN(v)){onSetCajaReal(v);}setEditando(false);}
   const dif=calc.diferencia;
   const hayDif=dif!==null&&dif!==0;
-  const borderColor=dif===null?"#d8d2bc":hayDif?"#a3392a55":"#236b4655";
-  const bgColor=dif===null?"#f3efe2":hayDif?"#fbe2de":"#dff0e3";
+  const esPositivo=dif!==null&&dif>0;
+  const borderColor=dif===null?"#d8d2bc":hayDif?(esPositivo?"#8fc9a8":"#a3392a55"):"#236b4655";
+  const bgColor=dif===null?"#f3efe2":hayDif?(esPositivo?"#dff0e3":"#fbe2de"):"#dff0e3";
+  const colorDif=hayDif?(esPositivo?"#236b46":"#a3392a"):"#236b46";
+  const bgMsg=esPositivo?"#cce8d2":"#fad9d3";
   return(
     <div style={{background:bgColor,border:`1px solid ${borderColor}`,borderRadius:10,padding:"12px 14px",marginBottom:14}}>
       <div style={{fontSize:10,letterSpacing:2,color:"#8a6f24",textTransform:"uppercase",marginBottom:10,fontWeight:"bold"}}>Arqueo de Caja</div>
@@ -262,13 +265,13 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
         </div>
       </div>
       {dif!==null&&(
-        <div style={{borderTop:`1px solid ${hayDif?"#d99a8f":"#8fc9a8"}`,paddingTop:10,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div style={{fontSize:11,color:hayDif?"#a3392a":"#236b46",fontWeight:"bold"}}>{hayDif?"⚠ DESCUADRE":"✓ CUADRE EXACTO"}</div>
-          <div style={{fontSize:16,color:hayDif?"#a3392a":"#236b46",fontWeight:"bold"}}>{dif>0?"+":""}{formatCurrency(dif)}</div>
+        <div style={{borderTop:`1px solid ${hayDif?(esPositivo?"#8fc9a8":"#d99a8f"):"#8fc9a8"}`,paddingTop:10,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{fontSize:12,color:colorDif,fontWeight:"bold"}}>{hayDif?"⚠ DESCUADRE":"✓ CUADRE EXACTO"}</div>
+          <div style={{fontSize:18,color:colorDif,fontWeight:"bold"}}>{dif>0?"+":""}{formatCurrency(dif)}</div>
         </div>
       )}
       {dif!==null&&hayDif&&(
-        <div style={{marginTop:6,fontSize:10,color:"#a3392a",background:"#fad9d3",borderRadius:6,padding:"6px 10px",border:"1px solid #d99a8f33"}}>
+        <div style={{marginTop:6,fontSize:15,color:colorDif,background:bgMsg,borderRadius:8,padding:"10px 14px",fontWeight:"bold"}}>
           {dif>0?`Hay ${formatCurrency(Math.abs(dif))} más de lo esperado en caja.`:`Faltan ${formatCurrency(Math.abs(dif))} en caja respecto al cálculo teórico.`}
         </div>
       )}
