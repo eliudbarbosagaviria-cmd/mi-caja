@@ -250,7 +250,7 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
           <div style={{fontSize:10,color:"#2c2a22",fontWeight:"bold",marginTop:4}}>= Base + Vtas − Gas</div>
         </div>
         <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
-          <div style={{fontSize:window.innerWidth<768?10:11,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Real</div>
+          <div style={{fontSize:window.innerWidth<768?10:11,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Metálico</div>
           {cajaReal!==null&&!editando
             ?<div style={{fontSize:14,color:"#2c2a22",fontWeight:"bold",cursor:editable?"pointer":"default"}} onClick={()=>editable&&setEditando(true)}>{formatCurrency(cajaReal)}</div>
             :editando
