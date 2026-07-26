@@ -1362,7 +1362,7 @@ export default function App() {
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           {admin&&<button onClick={()=>setShowExport(true)} style={{background:"#d5e8db",border:"1px solid #93c2a3",color:"#236b46",padding:"6px 12px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>📊 Excel</button>}
           <button onClick={()=>signOut(auth)} style={{background:"transparent",border:"1px solid #c4bda3",color:"#8a8268",padding:"6px 10px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>Salir</button>
-          <div style={{fontSize:10,color:"#8a8268"}}>{new Date().toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}</div>
+          <div style={{fontSize:13,color:"#2c2a22"}}>{new Date().toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}</div>
         </div>
       </div>
       {tabsDisponibles.length>1&&<div style={{display:"flex",borderBottom:"1px solid #d4cfba",background:"#e7e1cf"}}>
