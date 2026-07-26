@@ -54,6 +54,17 @@ const LOCALES = [
   { id: "local2", nombre: "Badalona", emoji: "🏬", color: "#3a6fa0" },
 ];
 
+// Asigna cada cuenta de empleado a su local. Añade aquí un renglón por cada
+// empleado: "email@ejemplo.com": "local1" (o "local2").
+const EMPLEADOS_LOCAL = {
+  "entrepuesbar@gmail.com": "local1",
+  "danielcaragui@hotmail.com": "local2",
+};
+function getLocalIdForUser(user) {
+  if (!user?.email) return null;
+  return EMPLEADOS_LOCAL[user.email.toLowerCase()] || null;
+}
+
 const TIPOS_MOV = {
   venta:    { label: "Venta efectivo", emoji: "💵", signo: +1, grupo: "ingreso", color: "#236b46" },
   venta_tarjeta: { label: "Venta tarjeta", emoji: "💳", signo: 0, grupo: "ingreso", color: "#1f6f9e" },
@@ -1310,6 +1321,26 @@ export default function App() {
   );
   if(!user && showWelcome) return <WelcomeScreen onEntrar={()=>setShowWelcome(false)}/>;
   if(!user) return <LoginScreen/>;
+
+  const admin = isAdmin(user);
+  const localIdUsuario = getLocalIdForUser(user);
+  const misLocales = admin ? LOCALES : LOCALES.filter(l=>l.id===localIdUsuario);
+
+  // Empleado logueado pero sin local asignado en EMPLEADOS_LOCAL
+  if(!admin && misLocales.length===0) return (
+    <div style={{minHeight:"100vh",background:"#e8e4d8",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif",padding:20,textAlign:"center"}}>
+      <div style={{background:"#ece0bd",border:"1px solid #c4bda3",borderRadius:16,padding:32,maxWidth:340}}>
+        <div style={{fontSize:14,color:"#2c2a22",marginBottom:10}}>Tu cuenta no tiene un local asignado</div>
+        <div style={{fontSize:12,color:"#7a7258",marginBottom:20}}>Contacta con el administrador para que la vincule a un local.</div>
+        <button onClick={()=>signOut(auth)} style={{background:"transparent",border:"1px solid #c4bda3",color:"#8a8268",padding:"8px 16px",borderRadius:20,fontSize:11,cursor:"pointer",fontFamily:"Georgia,serif"}}>Salir</button>
+      </div>
+    </div>
+  );
+
+  const tabsDisponibles = admin
+    ? [["dashboard","🏠 Inicio"],["caja","💼 Caja"],["fuerte","🔒 Fuerte"],["informes","📋 Informes"]]
+    : [["caja","💼 Caja"]];
+
   return(
     <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#e8e4d8",color:"#2c2a22",padding:"0 0 60px"}}>
       <div style={{background:"#f0ece0",borderBottom:"1px solid #d4cfba",padding:isMobile?"10px 14px":"10px 32px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -1317,33 +1348,33 @@ export default function App() {
           <img src={require("./logo.png")} alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
           <div>
             <div style={{fontSize:9,letterSpacing:3,color:"#8a8268",textTransform:"uppercase"}}>Libro de Caja</div>
-            <div style={{fontSize:16,color:"#2c2a22"}}>Entre Pues</div>
+            <div style={{fontSize:16,color:"#2c2a22"}}>Entre Pues{!admin&&misLocales[0]?` · ${localStorage.getItem(`nombre_${misLocales[0].id}`)||misLocales[0].nombre}`:""}</div>
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <button onClick={exportarExcel} style={{background:"#d5e8db",border:"1px solid #93c2a3",color:"#236b46",padding:"6px 12px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>📊 Excel</button>
+          {admin&&<button onClick={exportarExcel} style={{background:"#d5e8db",border:"1px solid #93c2a3",color:"#236b46",padding:"6px 12px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>📊 Excel</button>}
           <button onClick={()=>signOut(auth)} style={{background:"transparent",border:"1px solid #c4bda3",color:"#8a8268",padding:"6px 10px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>Salir</button>
           <div style={{fontSize:10,color:"#8a8268"}}>{new Date().toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}</div>
         </div>
       </div>
-      <div style={{display:"flex",borderBottom:"1px solid #d4cfba",background:"#f3efe2"}}>
-        {[["dashboard","🏠 Inicio"],["caja","💼 Caja"],["fuerte","🔒 Fuerte"],["informes","📋 Informes"]].map(([k,label])=>(
+      {tabsDisponibles.length>1&&<div style={{display:"flex",borderBottom:"1px solid #d4cfba",background:"#f3efe2"}}>
+        {tabsDisponibles.map(([k,label])=>(
           <button key={k} onClick={()=>setMainTab(k)}
             style={{flex:1,padding:"11px 0",background:"transparent",border:"none",borderBottom:mainTab===k?"2px solid #8a6f24":"2px solid transparent",color:mainTab===k?"#8a6f24":"#8a8268",fontSize:10,cursor:"pointer",letterSpacing:1}}>
             {label}
           </button>
         ))}
-      </div>
+      </div>}
       <div style={{maxWidth:isMobile?820:1400,margin:"0 auto",padding:isMobile?"10px 8px":"20px 32px"}}>
-        {mainTab==="dashboard"&&<Dashboard isMobile={isMobile}/>}
-        {mainTab==="caja"&&<>
-          <ResumenConsolidado/>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:isMobile?6:20}}>
-            {LOCALES.map(local=><CajaLocal key={local.id} local={local} user={user}/>)}
+        {mainTab==="dashboard"&&admin&&<Dashboard isMobile={isMobile}/>}
+        {(mainTab==="caja"||!admin)&&<>
+          {admin&&<ResumenConsolidado/>}
+          <div style={{display:"grid",gridTemplateColumns:misLocales.length>1?"1fr 1fr":"1fr",gap:isMobile?6:20}}>
+            {misLocales.map(local=><CajaLocal key={local.id} local={local} user={user}/>)}
           </div>
         </>}
-        {mainTab==="fuerte"&&<div style={{maxWidth:isMobile?"100%":800,margin:"0 auto"}}><CajaFuerte/></div>}
-        {mainTab==="informes"&&<Informes/>}
+        {mainTab==="fuerte"&&admin&&<div style={{maxWidth:isMobile?"100%":800,margin:"0 auto"}}><CajaFuerte/></div>}
+        {mainTab==="informes"&&admin&&<Informes/>}
         <div style={{marginTop:12,display:"flex",gap:12,justifyContent:"center",flexWrap:"wrap"}}>
           <span style={{fontSize:window.innerWidth<768?11:12,color:"#8a6f24"}}>✏️ Toca el nombre para renombrarlo</span>
           <span style={{fontSize:window.innerWidth<768?11:12,color:"#236b46"}}>● Día con datos</span>
