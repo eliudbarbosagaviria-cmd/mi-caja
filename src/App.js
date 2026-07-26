@@ -642,9 +642,24 @@ function CajaLocal({local, user}) {
   const [nota,setNota]=useState("");
   const [flash,setFlash]=useState("");
   const [localNombre,setLocalNombre]=useState(()=>localStorage.getItem(`nombre_${local.id}`)||local.nombre);
+  const [aviso,setAviso]=useState("");
+  const [editAviso,setEditAviso]=useState(false);
+  const [avisoInput,setAvisoInput]=useState("");
   const inputRef=useRef();
 
   useEffect(()=>{const d=loadDay(local.id,viewDate);setDayData(d);setNota(d.nota||"");},[viewDate,local.id]);
+
+  useEffect(()=>{
+    const unsub=onSnapshot(doc(db,"config","aviso"),(snap)=>{
+      setAviso(snap.exists()?(snap.data().mensaje||""):"");
+    });
+    return()=>unsub();
+  },[]);
+
+  async function guardarAviso(){
+    await setDoc(doc(db,"config","aviso"),{mensaje:avisoInput.trim()});
+    setEditAviso(false);
+  }
 
   useEffect(()=>{
     syncFromFirebase(local.id).then(()=>{
@@ -721,6 +736,20 @@ function CajaLocal({local, user}) {
           {hayDescuadre&&<div style={{fontSize:window.innerWidth<768?11:12,color:"#a3392a"}}>⚠ Descuadre {formatCurrency(calc.diferencia)}</div>}
         </div>
       </div>
+      {(aviso||admin)&&(
+        <div style={{background:"#a3392a",padding:window.innerWidth<768?"9px 12px":"11px 14px",display:"flex",alignItems:"center",gap:window.innerWidth<768?8:10}}>
+          {!editAviso&&<>
+            <span style={{fontSize:window.innerWidth<768?15:17}}>📢</span>
+            <span style={{fontSize:window.innerWidth<768?13:15,color:"#fcebeb",flex:1,fontWeight:"bold"}}>{aviso||(admin?"Sin aviso · toca ✏️ para añadir uno":"")}</span>
+            {admin&&<span onClick={()=>{setAvisoInput(aviso);setEditAviso(true);}} style={{cursor:"pointer",fontSize:window.innerWidth<768?14:16,color:"#fcebeb"}} title="Editar aviso">✏️</span>}
+          </>}
+          {editAviso&&admin&&<>
+            <input type="text" value={avisoInput} onChange={e=>setAvisoInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&guardarAviso()} placeholder="Mensaje para todos los empleados" style={{...inp,flex:1,fontSize:window.innerWidth<768?13:14,padding:"6px 9px"}} autoFocus/>
+            <button onClick={guardarAviso} style={{background:"#2c2a22",border:"none",color:"#fcebeb",padding:"6px 10px",borderRadius:6,fontSize:11,cursor:"pointer"}}>Guardar</button>
+            <button onClick={()=>setEditAviso(false)} style={{background:"transparent",border:"1px solid #fcebeb",color:"#fcebeb",padding:"6px 8px",borderRadius:6,fontSize:11,cursor:"pointer"}}>×</button>
+          </>}
+        </div>
+      )}
       <div style={{display:"flex",borderBottom:"1px solid #d4cfba"}}>
         {[["hoy","📋 Hoy"],...(admin?[["historial","📅 Calendario"]]:[["ayer","↩️ Ayer"]])].map(([k,label])=>(
           <button key={k} onClick={()=>{setTab(k);if(k==="hoy")setViewDate(today);if(k==="ayer")setViewDate(yesterday);}}
