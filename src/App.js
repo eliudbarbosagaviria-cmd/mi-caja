@@ -795,13 +795,13 @@ function CajaLocal({local, user}) {
                 </button>
               ))}
             </div>
-            <select value={form.categoria} onChange={e=>setForm(f=>({...f,categoria:e.target.value}))} style={{...inp,width:"100%",boxSizing:"border-box",marginBottom:7}}>
+            <select value={form.categoria} onChange={e=>setForm(f=>({...f,categoria:e.target.value}))} style={{...inp,width:"100%",boxSizing:"border-box",marginBottom:7,fontSize:window.innerWidth<768?13:14}}>
               {CATS[form.tipo].map(c=><option key={c}>{c}</option>)}
             </select>
-            <input type="text" placeholder="Descripción (opcional)" value={form.descripcion} onChange={e=>setForm(f=>({...f,descripcion:e.target.value}))} style={{...inp,width:"100%",boxSizing:"border-box",marginBottom:7}}/>
+            <input type="text" placeholder="Descripción (opcional)" value={form.descripcion} onChange={e=>setForm(f=>({...f,descripcion:e.target.value}))} style={{...inp,width:"100%",boxSizing:"border-box",marginBottom:7,fontSize:window.innerWidth<768?13:14}}/>
             <div style={{display:"flex",gap:6}}>
-              <input ref={inputRef} type="number" placeholder="Monto" value={form.monto} onChange={e=>setForm(f=>({...f,monto:e.target.value}))} onKeyDown={e=>e.key==="Enter"&&addMovimiento()} style={{...inp,flex:1}}/>
-              <button onClick={addMovimiento} style={{...btnPri,background:TIPOS_MOV[form.tipo].color}}>+ Agregar</button>
+              <input ref={inputRef} type="number" placeholder="Monto" value={form.monto} onChange={e=>setForm(f=>({...f,monto:e.target.value}))} onKeyDown={e=>e.key==="Enter"&&addMovimiento()} style={{...inp,flex:1,fontSize:window.innerWidth<768?13:14}}/>
+              <button onClick={addMovimiento} style={{...btnPri,background:TIPOS_MOV[form.tipo].color,fontSize:window.innerWidth<768?13:14}}>+ Agregar</button>
             </div>
           </div>
         )}
@@ -822,7 +822,7 @@ function CajaLocal({local, user}) {
         )}
         {showResumen&&<ResumenDiario localId={local.id} dateKey={viewDate} onClose={()=>setShowResumen(false)}/>}
         <div>
-          {dayData.movimientos.length===0&&!isFuture&&<div style={{textAlign:"center",color:"#8a8268",fontSize:12,padding:"14px 0"}}>Sin movimientos{isToday?" aún":""}</div>}
+          {dayData.movimientos.length===0&&!isFuture&&<div style={{textAlign:"center",color:"#8a8268",fontSize:window.innerWidth<768?13:14,padding:"14px 0"}}>Sin movimientos{isToday?" aún":""}</div>}
           {isFuture&&<div style={{textAlign:"center",color:"#8a8268",fontSize:12,padding:"14px 0"}}>Día futuro</div>}
           {dayData.movimientos.slice().reverse().map(mov=>{
             const info=TIPOS_MOV[mov.tipo]||{color:"#7a7258",signo:1};
