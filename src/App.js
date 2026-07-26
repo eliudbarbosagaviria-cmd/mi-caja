@@ -221,7 +221,7 @@ function LocalNameEditor({local,onSave}) {
   if(editing) return(
     <span style={{display:"inline-flex",gap:4,alignItems:"center"}}>
       <input value={val} onChange={e=>setVal(e.target.value)} onKeyDown={e=>e.key==="Enter"&&save()}
-        style={{background:"#e8e4d8",border:"1px solid #c4bda3",borderRadius:6,padding:"3px 8px",color:"#2c2a22",fontSize:13,width:120}} autoFocus/>
+        style={{background:"#bdb69c",border:"1px solid #c4bda3",borderRadius:6,padding:"3px 8px",color:"#2c2a22",fontSize:13,width:120}} autoFocus/>
       <button onClick={save} style={{background:"transparent",border:"none",color:"#236b46",cursor:"pointer",fontSize:14}}>✓</button>
     </span>);
   return <span style={{cursor:"pointer",borderBottom:"1px dashed #a39c80"}} onClick={()=>setEditing(true)} title="Clic para renombrar">{val}</span>;
@@ -244,24 +244,24 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
   const hayDif=dif!==null&&dif!==0;
   const esPositivo=dif!==null&&dif>0;
   const borderColor=dif===null?"#d8d2bc":hayDif?(esPositivo?"#8fc9a8":"#a3392a55"):"#236b4655";
-  const bgColor=dif===null?"#f3efe2":hayDif?(esPositivo?"#dff0e3":"#fbe2de"):"#dff0e3";
+  const bgColor=dif===null?"#d1cbb1":hayDif?(esPositivo?"#dff0e3":"#fbe2de"):"#dff0e3";
   const colorDif=hayDif?(esPositivo?"#236b46":"#a3392a"):"#236b46";
   const bgMsg=esPositivo?"#cce8d2":"#fad9d3";
   return(
     <div style={{background:bgColor,border:`1px solid ${borderColor}`,borderRadius:10,padding:"12px 14px",marginBottom:14}}>
       <div style={{fontSize:window.innerWidth<768?12:14,letterSpacing:2,color:"#8a6f24",textTransform:"uppercase",marginBottom:10,fontWeight:"bold"}}>Arqueo de Caja</div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:10}}>
-        <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
-          <div style={{fontSize:window.innerWidth<768?10:11,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Base de caja</div>
+        <div style={{textAlign:"center",background:"#c7c0a6",borderRadius:8,padding:"8px 4px"}}>
+          <div style={{fontSize:window.innerWidth<768?10:11,color:"#5f5a44",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Base de caja</div>
           <div style={{fontSize:13,color:"#2c2a22",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor-calc.ventas-calc.depositos+calc.gastos+calc.retiros)}</div>
         </div>
-        <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
-          <div style={{fontSize:window.innerWidth<768?10:11,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Teórica</div>
+        <div style={{textAlign:"center",background:"#c7c0a6",borderRadius:8,padding:"8px 4px"}}>
+          <div style={{fontSize:window.innerWidth<768?10:11,color:"#5f5a44",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Teórica</div>
           <div style={{fontSize:14,color:"#2c2a22",fontWeight:"bold"}}>{formatCurrency(calc.cajaTeor)}</div>
           <div style={{fontSize:10,color:"#2c2a22",fontWeight:"bold",marginTop:4}}>= Base + Vtas − Gas</div>
         </div>
-        <div style={{textAlign:"center",background:"#f0ece0",borderRadius:8,padding:"8px 4px"}}>
-          <div style={{fontSize:window.innerWidth<768?10:11,color:"#8a8268",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Metálico</div>
+        <div style={{textAlign:"center",background:"#c7c0a6",borderRadius:8,padding:"8px 4px"}}>
+          <div style={{fontSize:window.innerWidth<768?10:11,color:"#5f5a44",textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Metálico</div>
           {cajaReal!==null&&!editando
             ?<div style={{fontSize:14,color:"#2c2a22",fontWeight:"bold",cursor:editable?"pointer":"default"}} onClick={()=>editable&&setEditando(true)}>{formatCurrency(cajaReal)}</div>
             :editando
@@ -271,7 +271,7 @@ function DescuadrePanel({calc,cajaReal,onSetCajaReal,editable}) {
               </div>
               :editable
                 ?<button onClick={()=>setEditando(true)} style={{background:"#d5e8db",border:"1px solid #236b4644",color:"#236b46",borderRadius:6,padding:"4px 8px",cursor:"pointer",fontSize:9,fontWeight:"bold"}}>+ Ingresar</button>
-                :<div style={{fontSize:12,color:"#8a8268"}}>–</div>
+                :<div style={{fontSize:12,color:"#5f5a44"}}>–</div>
           }
         </div>
       </div>
@@ -299,13 +299,13 @@ function ResumenDiario({localId,dateKey,onClose}) {
       <div style={{background:"#ece0bd",border:"1px solid #c4bda3",borderRadius:16,padding:24,width:380,maxWidth:"92vw",maxHeight:"90vh",overflowY:"auto"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
           <div>
-            <div style={{fontSize:10,letterSpacing:2,color:"#8a8268",textTransform:"uppercase"}}>Resumen Diario</div>
+            <div style={{fontSize:10,letterSpacing:2,color:"#5f5a44",textTransform:"uppercase"}}>Resumen Diario</div>
             <div style={{fontSize:14,color:"#2c2a22"}}>{nombre} · {formatDate(dateKey)}</div>
-            <div style={{fontSize:10,color:"#8a8268"}}>Semana {getWeekNumber(dateKey)}</div>
+            <div style={{fontSize:10,color:"#5f5a44"}}>Semana {getWeekNumber(dateKey)}</div>
           </div>
-          <button onClick={onClose} style={{background:"transparent",border:"none",color:"#8a8268",fontSize:20,cursor:"pointer"}}>×</button>
+          <button onClick={onClose} style={{background:"transparent",border:"none",color:"#5f5a44",fontSize:20,cursor:"pointer"}}>×</button>
         </div>
-        <div style={{background:"#e8e4d8",border:"1px solid #d4cfba",borderRadius:10,padding:14,marginBottom:14}}>
+        <div style={{background:"#bdb69c",border:"1px solid #a39c80",borderRadius:10,padding:14,marginBottom:14}}>
           <div style={{fontSize:9,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",fontWeight:"bold",marginBottom:10}}>Cálculo</div>
           {[["Base de caja",data.saldoInicial,"#7a7258",""],["+ Ventas efectivo",c.ventas,"#236b46","+"],["+ Depósitos",c.depositos,"#1f7a8a","+"],["− Gastos",c.gastos,"#a3392a","−"],["− Retiros",c.retiros,"#a3621f","−"]].map(([label,val,color,sign])=>(
             <div key={label} style={{display:"flex",justifyContent:"space-between",marginBottom:5,paddingBottom:5,borderBottom:"1px solid #ddd6bd"}}>
@@ -370,11 +370,11 @@ function CalendarioMes({localId,onSelectDate,selectedDate,accent}) {
     setYear(ny);setMonth(nm);
   }
   return(
-    <div style={{background:"#e8e4d8",border:"1px solid #d4cfba",borderRadius:12,padding:14,marginBottom:14}}>
+    <div style={{background:"#bdb69c",border:"1px solid #a39c80",borderRadius:12,padding:14,marginBottom:14}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-        <button onClick={prevMonth} style={{background:"transparent",border:"none",color:"#8a8268",cursor:"pointer",fontSize:16,padding:"0 6px"}}>‹</button>
+        <button onClick={prevMonth} style={{background:"transparent",border:"none",color:"#5f5a44",cursor:"pointer",fontSize:16,padding:"0 6px"}}>‹</button>
         <div style={{fontSize:13,color:"#2c2a22",fontWeight:"bold"}}>{MESES[month-1]} {year}</div>
-        <button onClick={nextMonth} style={{background:"transparent",border:"none",color:month===now.getMonth()+1&&year===now.getFullYear()?"#d4cfba":"#8a8268",cursor:"pointer",fontSize:16,padding:"0 6px"}}>›</button>
+        <button onClick={nextMonth} style={{background:"transparent",border:"none",color:month===now.getMonth()+1&&year===now.getFullYear()?"#a39c80":"#5f5a44",cursor:"pointer",fontSize:16,padding:"0 6px"}}>›</button>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"44px repeat(7,1fr)",gap:2,marginBottom:4}}>
         <div style={{fontSize:9,color:"#7a7258",textAlign:"center"}}>Sem.</div>
@@ -403,7 +403,7 @@ function CalendarioMes({localId,onSelectDate,selectedDate,accent}) {
                   <button key={dk} onClick={()=>!isFut&&onSelectDate(dk)}
                     style={{padding:"5px 2px",borderRadius:7,border:isSel?`2px solid ${accent}`:isTod?"2px solid #236b4666":"1px solid transparent",
                       background:isSel?accent+"33":hasDat?"#cce8d2":"#e3ddc8",
-                      color:isFut?"#d8d2bc":isTod?"#236b46":hasDat?"#2e6b46":"#8a8268",
+                      color:isFut?"#d8d2bc":isTod?"#236b46":hasDat?"#2e6b46":"#5f5a44",
                       cursor:isFut?"default":"pointer",fontSize:11,textAlign:"center",position:"relative"}}>
                     {dk.split("-")[2]}
                     {hasDat&&<span style={{position:"absolute",bottom:2,left:"50%",transform:"translateX(-50%)",width:4,height:4,borderRadius:"50%",background:hasDif?"#a3392a":"#236b46",display:"block"}}/>}
@@ -412,9 +412,9 @@ function CalendarioMes({localId,onSelectDate,selectedDate,accent}) {
             </div>
             {(wIng>0||wEgr>0)&&<div style={{display:"grid",gridTemplateColumns:"44px 1fr",gap:2,marginTop:2}}>
               <div/>
-              <div style={{fontSize:9,color:"#8a8268",paddingLeft:4}}>
+              <div style={{fontSize:9,color:"#5f5a44",paddingLeft:4}}>
                 <span style={{color:"#236b4688"}}>+{formatCurrencyShort(wIng)}</span>
-                <span style={{color:"#8a8268",margin:"0 4px"}}>·</span>
+                <span style={{color:"#5f5a44",margin:"0 4px"}}>·</span>
                 <span style={{color:"#a3392a88"}}>-{formatCurrencyShort(wEgr)}</span>
               </div>
             </div>}
@@ -427,15 +427,15 @@ function ComparativaCards({s1,s2,n1,n2,c1,c2}) {
   return(
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:10}}>
       {[[s1,n1,c1],[s2,n2,c2]].map(([s,n,c])=>(
-        <div key={n} style={{background:"#e8e4d8",border:`1px solid ${c}33`,borderRadius:10,padding:12}}>
+        <div key={n} style={{background:"#bdb69c",border:`1px solid ${c}33`,borderRadius:10,padding:12}}>
           <div style={{fontSize:10,color:c,marginBottom:8,fontWeight:"bold"}}>{n}</div>
           {[["💵 Efectivo",s.ventas,"#236b46"],["💳 Tarjeta",s.ventas_tarjeta,"#1f6f9e"],["📱 Bizum",s.ventas_bizum,"#6a4eb8"],["🔵 SumUp",s.ventas_sumup,"#a3650f"],["Depósitos",s.depositos,"#1f7a8a"],["Gastos",s.gastos,"#a3392a"],["Retiros",s.retiros,"#a3621f"]].map(([l,v,col])=>(
             <div key={l} style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-              <span style={{fontSize:10,color:"#8a8268"}}>{l}</span>
+              <span style={{fontSize:10,color:"#5f5a44"}}>{l}</span>
               <span style={{fontSize:10,color:col,fontWeight:"bold"}}>{formatCurrency(v)}</span>
             </div>
           ))}
-          <div style={{borderTop:"1px solid #d4cfba",paddingTop:5,display:"flex",justifyContent:"space-between"}}>
+          <div style={{borderTop:"1px solid #a39c80",paddingTop:5,display:"flex",justifyContent:"space-between"}}>
             <span style={{fontSize:10,color:"#7a7258"}}>Utilidad</span>
             <span style={{fontSize:13,color:s.utilidad>=0?"#8a6f24":"#a3392a",fontWeight:"bold"}}>{formatCurrency(s.utilidad)}</span>
           </div>
@@ -473,12 +473,12 @@ function Informes() {
             const nombre=localStorage.getItem(`nombre_${local.id}`)||local.nombre;
             const d=loadDay(local.id,fecha); const c=calcDay(d);
             return(
-              <div key={local.id} style={{background:"#f3efe2",border:`1px solid ${local.color}44`,borderRadius:12,overflow:"hidden"}}>
+              <div key={local.id} style={{background:"#d1cbb1",border:`1px solid ${local.color}44`,borderRadius:12,overflow:"hidden"}}>
                 <div style={{height:3,background:local.color}}/>
                 <div style={{padding:12}}>
                   <div style={{fontSize:11,color:local.color,marginBottom:10,fontWeight:"bold"}}>{local.emoji} {nombre}</div>
                   {[["Base de caja",d.saldoInicial,"#7a7258"],["Ventas",c.ventas,"#236b46"],["Depósitos",c.depositos,"#1f7a8a"],["Gastos",c.gastos,"#a3392a"],["Retiros",c.retiros,"#a3621f"]].map(([l,v,col])=>(
-                    <div key={l} style={{display:"flex",justifyContent:"space-between",marginBottom:6,paddingBottom:5,borderBottom:"1px solid #d4cfba"}}>
+                    <div key={l} style={{display:"flex",justifyContent:"space-between",marginBottom:6,paddingBottom:5,borderBottom:"1px solid #a39c80"}}>
                       <span style={{fontSize:10,color:col,fontWeight:"bold"}}>{l}</span>
                       <span style={{fontSize:11,color:col,fontWeight:"bold"}}>{formatCurrency(v)}</span>
                     </div>
@@ -520,7 +520,7 @@ function Informes() {
         {dias.length>0&&<>
           <div style={{fontSize:10,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",margin:"16px 0 8px",fontWeight:"bold"}}>Ingresos diarios</div>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={dias}><CartesianGrid strokeDasharray="3 3" stroke="#d4cfba"/>
+            <BarChart data={dias}><CartesianGrid strokeDasharray="3 3" stroke="#a39c80"/>
               <XAxis dataKey="dia" tick={{fill:"#7a7258",fontSize:9}} axisLine={false} tickLine={false}/>
               <YAxis tick={{fill:"#7a7258",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
               <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:13,color:"#2c2a22"}}/>
@@ -550,7 +550,7 @@ function Informes() {
         {chartData.length>0&&<>
           <div style={{fontSize:10,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",margin:"16px 0 8px",fontWeight:"bold"}}>Ingresos del mes</div>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" stroke="#d4cfba"/>
+            <BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" stroke="#a39c80"/>
               <XAxis dataKey="dia" tick={{fill:"#7a7258",fontSize:9}} axisLine={false} tickLine={false}/>
               <YAxis tick={{fill:"#7a7258",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
               <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10}}/>
@@ -559,7 +559,7 @@ function Informes() {
           </ResponsiveContainer>
           <div style={{fontSize:10,color:"#a3392a",letterSpacing:2,textTransform:"uppercase",margin:"16px 0 8px",fontWeight:"bold"}}>Gastos del mes</div>
           <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" stroke="#d4cfba"/>
+            <BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" stroke="#a39c80"/>
               <XAxis dataKey="dia" tick={{fill:"#7a7258",fontSize:9}} axisLine={false} tickLine={false}/>
               <YAxis tick={{fill:"#7a7258",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={38}/>
               <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10}}/>
@@ -585,7 +585,7 @@ function Informes() {
         </div>
         <div style={{fontSize:10,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",marginBottom:8,fontWeight:"bold"}}>Utilidad mensual comparada</div>
         <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={mesesData}><CartesianGrid strokeDasharray="3 3" stroke="#d4cfba"/>
+          <BarChart data={mesesData}><CartesianGrid strokeDasharray="3 3" stroke="#a39c80"/>
             <XAxis dataKey="mes" tick={{fill:"#7a7258",fontSize:10}} axisLine={false} tickLine={false}/>
             <YAxis tick={{fill:"#7a7258",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={40}/>
             <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10}}/>
@@ -594,7 +594,7 @@ function Informes() {
         </ResponsiveContainer>
         <div style={{fontSize:10,color:"#236b46",letterSpacing:2,textTransform:"uppercase",margin:"18px 0 8px",fontWeight:"bold"}}>Ventas + Depósitos mensuales</div>
         <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={mesesData}><CartesianGrid strokeDasharray="3 3" stroke="#d4cfba"/>
+          <LineChart data={mesesData}><CartesianGrid strokeDasharray="3 3" stroke="#a39c80"/>
             <XAxis dataKey="mes" tick={{fill:"#7a7258",fontSize:10}} axisLine={false} tickLine={false}/>
             <YAxis tick={{fill:"#7a7258",fontSize:9}} tickFormatter={formatCurrencyShort} axisLine={false} tickLine={false} width={40}/>
             <Tooltip content={<CustomTooltip/>}/><Legend wrapperStyle={{fontSize:10}}/>
@@ -607,12 +607,12 @@ function Informes() {
   }
 
   return(
-    <div style={{background:"#f3efe2",border:"1px solid #d4cfba",borderRadius:16,padding:20,marginBottom:24}}>
+    <div style={{background:"#d1cbb1",border:"1px solid #a39c80",borderRadius:16,padding:20,marginBottom:24}}>
       <div style={{fontSize:11,letterSpacing:2,color:"#8a6f24",textTransform:"uppercase",marginBottom:14,fontWeight:"bold"}}>📋 Informes</div>
       <div style={{display:"flex",gap:6,marginBottom:20,flexWrap:"wrap"}}>
         {[["diario","📅 Diario"],["semanal","📆 Semanal"],["mensual","🗓 Mensual"],["comparativa","⚖ Comparativa"]].map(([k,label])=>(
           <button key={k} onClick={()=>setTipoInforme(k)}
-            style={{padding:"6px 14px",borderRadius:20,border:`1px solid ${tipoInforme===k?"#8a6f24":"#8a6f2433"}`,background:tipoInforme===k?"#e3d4a8":"transparent",color:tipoInforme===k?"#8a6f24":"#8a8268",fontSize:11,cursor:"pointer",fontWeight:tipoInforme===k?"bold":"normal"}}>
+            style={{padding:"6px 14px",borderRadius:20,border:`1px solid ${tipoInforme===k?"#8a6f24":"#8a6f2433"}`,background:tipoInforme===k?"#e3d4a8":"transparent",color:tipoInforme===k?"#8a6f24":"#5f5a44",fontSize:11,cursor:"pointer",fontWeight:tipoInforme===k?"bold":"normal"}}>
             {label}
           </button>
         ))}
@@ -702,7 +702,7 @@ function CajaLocal({local, user}) {
   const hayDescuadre=calc.diferencia!==null&&calc.diferencia!==0;
 
   return(
-    <div style={{background:"#f3efe2",border:`1px solid ${hayDescuadre?"#d99a8f":accent+"44"}`,borderRadius:16,overflow:"hidden",position:"relative"}}>
+    <div style={{background:"#d1cbb1",border:`1px solid ${hayDescuadre?"#d99a8f":accent+"44"}`,borderRadius:16,overflow:"hidden",position:"relative"}}>
       {flash&&<div style={{position:"absolute",top:12,left:"50%",transform:"translateX(-50%)",background:"#8fc9a8",color:"#236b46",padding:"8px 22px",borderRadius:40,fontSize:12,zIndex:99,boxShadow:"0 4px 16px rgba(0,0,0,0.5)",whiteSpace:"nowrap"}}>{flash}</div>}
       <div style={{height:3,background:hayDescuadre?"#a3392a":accent}}/>
       <div style={{background:`${accent}18`,borderBottom:`1px solid ${accent}33`,padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -719,10 +719,10 @@ function CajaLocal({local, user}) {
           {hayDescuadre&&<div style={{fontSize:window.innerWidth<768?11:12,color:"#a3392a"}}>⚠ Descuadre {formatCurrency(calc.diferencia)}</div>}
         </div>
       </div>
-      <div style={{display:"flex",borderBottom:"1px solid #d4cfba"}}>
+      <div style={{display:"flex",borderBottom:"1px solid #a39c80"}}>
         {[["hoy","📋 Hoy"],...(admin?[["historial","📅 Calendario"]]:[["ayer","↩️ Ayer"]])].map(([k,label])=>(
           <button key={k} onClick={()=>{setTab(k);if(k==="hoy")setViewDate(today);if(k==="ayer")setViewDate(yesterday);}}
-            style={{flex:1,padding:"9px 0",background:"transparent",border:"none",borderBottom:tab===k?`2px solid ${accent}`:"2px solid transparent",color:tab===k?accent:"#8a8268",fontSize:11,cursor:"pointer",letterSpacing:1}}>
+            style={{flex:1,padding:"9px 0",background:"transparent",border:"none",borderBottom:tab===k?`2px solid ${accent}`:"2px solid transparent",color:tab===k?accent:"#5f5a44",fontSize:11,cursor:"pointer",letterSpacing:1}}>
             {label}
           </button>
         ))}
@@ -730,14 +730,14 @@ function CajaLocal({local, user}) {
       <div style={{padding:10}}>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,flexWrap:"wrap"}}>
           <span style={{background:accent+"22",border:`1px solid ${accent}44`,color:accent,borderRadius:20,padding:"3px 10px",fontSize:window.innerWidth<768?11:12,letterSpacing:1,fontWeight:"bold"}}>Semana {semana}</span>
-          <span style={{fontSize:11,color:"#8a8268"}}>{formatDateShort(viewDate)}{isToday?" · Hoy":""}</span>
+          <span style={{fontSize:11,color:"#5f5a44"}}>{formatDateShort(viewDate)}{isToday?" · Hoy":""}</span>
           {dayData.cerrado&&<span style={{fontSize:10,color:accent}}>· Cerrada ✓</span>}
-          <button onClick={()=>setShowResumen(true)} style={{marginLeft:"auto",background:"transparent",border:"1px solid #d4cfba",color:"#8a8268",padding:"3px 10px",borderRadius:20,fontSize:10,cursor:"pointer"}}>📄 Ver resumen</button>
+          <button onClick={()=>setShowResumen(true)} style={{marginLeft:"auto",background:"transparent",border:"1px solid #a39c80",color:"#5f5a44",padding:"3px 10px",borderRadius:20,fontSize:10,cursor:"pointer"}}>📄 Ver resumen</button>
         </div>
         {/* Métricas ventas por método + gastos */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:6}}>
           {[["💵 Efectivo",calc.ventas,"#236b46"],["💳 Tarjeta",calc.ventas_tarjeta,"#1f6f9e"],["📱 Bizum",calc.ventas_bizum,"#6a4eb8"],["🔵 SumUp",calc.ventas_sumup,"#a3650f"]].map(([label,val,color])=>(
-            <div key={label} style={{background:"#f3efe2",border:`1px solid ${color}44`,borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+            <div key={label} style={{background:"#d1cbb1",border:`1px solid ${color}44`,borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
               <div style={{fontSize:window.innerWidth<768?11:12,letterSpacing:1,color,marginBottom:3,fontWeight:"bold"}}>{label}</div>
               <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
@@ -745,7 +745,7 @@ function CajaLocal({local, user}) {
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:12}}>
           {[["Depósitos",calc.depositos,"#1f7a8a"],["Gastos",calc.gastos,"#a3392a"],["Retiros",calc.retiros,"#a3621f"]].map(([label,val,color])=>(
-            <div key={label} style={{background:"#f3efe2",border:`1px solid ${color}44`,borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+            <div key={label} style={{background:"#d1cbb1",border:`1px solid ${color}44`,borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
               <div style={{fontSize:window.innerWidth<768?11:12,letterSpacing:1,color,marginBottom:3,fontWeight:"bold"}}>{label}</div>
               <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
@@ -756,12 +756,12 @@ function CajaLocal({local, user}) {
         {!isFuture&&!dayData.cerrado&&(puedeEditar)&&(
           <div style={{display:"flex",gap:6,marginBottom:12}}>
             <button onClick={()=>setEditSaldo(true)} style={{...btnSec,fontSize:10}}>✏️ Saldo inicial</button>
-            <button onClick={()=>setShowCierre(true)} style={{background:accent,border:"none",color:"#f3efe2",padding:"7px 14px",borderRadius:20,fontSize:11,fontWeight:"bold",cursor:"pointer"}}>🔒 Cerrar caja</button>
+            <button onClick={()=>setShowCierre(true)} style={{background:accent,border:"none",color:"#d1cbb1",padding:"7px 14px",borderRadius:20,fontSize:11,fontWeight:"bold",cursor:"pointer"}}>🔒 Cerrar caja</button>
           </div>
         )}
-        {dayData.cerrado&&<div style={{fontSize:10,color:accent,marginBottom:10}}>CERRADA ✓ {dayData.horaCierre} {admin&&<span onClick={()=>persist({...dayData,cerrado:false})} style={{color:"#8a8268",cursor:"pointer",borderBottom:"1px dashed #a39c80",marginLeft:8}}>Reabrir</span>}</div>}
+        {dayData.cerrado&&<div style={{fontSize:10,color:accent,marginBottom:10}}>CERRADA ✓ {dayData.horaCierre} {admin&&<span onClick={()=>persist({...dayData,cerrado:false})} style={{color:"#5f5a44",cursor:"pointer",borderBottom:"1px dashed #a39c80",marginLeft:8}}>Reabrir</span>}</div>}
         {editSaldo&&(puedeEditar)&&(
-          <div style={{background:"#e8e4d8",border:"1px solid #d4cfba",borderRadius:8,padding:12,marginBottom:12}}>
+          <div style={{background:"#bdb69c",border:"1px solid #a39c80",borderRadius:8,padding:12,marginBottom:12}}>
             <div style={{fontSize:11,color:"#7a7258",marginBottom:6}}>Saldo inicial (efectivo al abrir)</div>
             <div style={{display:"flex",gap:6}}>
               <input type="number" value={saldoInput} onChange={e=>setSaldoInput(e.target.value)} placeholder="0" style={{...inp,flex:1}}/>
@@ -771,14 +771,14 @@ function CajaLocal({local, user}) {
           </div>
         )}
         {!isFuture&&!dayData.cerrado&&(puedeEditar)&&(
-          <div style={{background:"#e8e4d8",border:"1px solid #d4cfba",borderRadius:10,padding:14,marginBottom:12}}>
+          <div style={{background:"#bdb69c",border:"1px solid #a39c80",borderRadius:10,padding:14,marginBottom:12}}>
             {!isToday&&<div style={{fontSize:10,color:"#8a6f24",marginBottom:8}}>⚠ Registrando en día pasado: {formatDateShort(viewDate)}</div>}
             {/* Ventas por método de pago */}
             <div style={{fontSize:9,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",marginBottom:6,fontWeight:"bold"}}>Ventas</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:8}}>
               {[["venta","💵 Efectivo","#236b46"],["venta_tarjeta","💳 Tarjeta","#1f6f9e"],["venta_bizum","📱 Bizum","#6a4eb8"],["venta_sumup","🔵 SumUp","#a3650f"]].map(([tipo,label,color])=>(
                 <button key={tipo} onClick={()=>setForm(f=>({...f,tipo,categoria:CATS[tipo][0]}))}
-                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#f3efe2",color:form.tipo===tipo?color:color+"88",fontSize:10,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
+                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#d1cbb1",color:form.tipo===tipo?color:color+"88",fontSize:10,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
                   {label}
                 </button>
               ))}
@@ -788,7 +788,7 @@ function CajaLocal({local, user}) {
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:5,marginBottom:10}}>
               {[["deposito","🏦 Depósito","#1f7a8a"],["gasto","🧾 Gasto","#a3392a"],["retiro","💸 Retiro","#a3621f"]].map(([tipo,label,color])=>(
                 <button key={tipo} onClick={()=>setForm(f=>({...f,tipo,categoria:CATS[tipo][0]}))}
-                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#f3efe2",color:form.tipo===tipo?color:color+"88",fontSize:10,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
+                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#d1cbb1",color:form.tipo===tipo?color:color+"88",fontSize:10,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
                   {label}
                 </button>
               ))}
@@ -820,12 +820,12 @@ function CajaLocal({local, user}) {
         )}
         {showResumen&&<ResumenDiario localId={local.id} dateKey={viewDate} onClose={()=>setShowResumen(false)}/>}
         <div>
-          {dayData.movimientos.length===0&&!isFuture&&<div style={{textAlign:"center",color:"#8a8268",fontSize:12,padding:"14px 0"}}>Sin movimientos{isToday?" aún":""}</div>}
-          {isFuture&&<div style={{textAlign:"center",color:"#8a8268",fontSize:12,padding:"14px 0"}}>Día futuro</div>}
+          {dayData.movimientos.length===0&&!isFuture&&<div style={{textAlign:"center",color:"#5f5a44",fontSize:12,padding:"14px 0"}}>Sin movimientos{isToday?" aún":""}</div>}
+          {isFuture&&<div style={{textAlign:"center",color:"#5f5a44",fontSize:12,padding:"14px 0"}}>Día futuro</div>}
           {dayData.movimientos.slice().reverse().map(mov=>{
             const info=TIPOS_MOV[mov.tipo]||{color:"#7a7258",signo:1};
             return(
-              <div key={mov.id} style={{background:"#ece8da",border:"1px solid #f3efe2",borderRadius:8,padding:"9px 11px",marginBottom:5,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+              <div key={mov.id} style={{background:"#ece8da",border:"1px solid #d1cbb1",borderRadius:8,padding:"9px 11px",marginBottom:5,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
                   <div style={{width:7,height:7,borderRadius:"50%",background:info.color,flexShrink:0}}/>
                   <div>
@@ -842,7 +842,7 @@ function CajaLocal({local, user}) {
           })}
           {dayData.cerrado&&dayData.nota&&(
             <div style={{background:"#ece4cf",border:"1px solid #e8dba0",borderRadius:8,padding:10,marginTop:8}}>
-              <div style={{fontSize:9,letterSpacing:2,color:"#8a8268",textTransform:"uppercase",marginBottom:3}}>Nota</div>
+              <div style={{fontSize:9,letterSpacing:2,color:"#5f5a44",textTransform:"uppercase",marginBottom:3}}>Nota</div>
               <div style={{fontSize:11,color:"#7a6a30",fontStyle:"italic"}}>{dayData.nota}</div>
             </div>
           )}
@@ -876,12 +876,12 @@ function ResumenConsolidado() {
           ["Cajas Teór.",totales.reduce((s,t)=>s+t.calc.cajaTeor,0),totalUtil>=0?"#8a6f24":"#a3392a"]
         ].map(([label,val,color])=>(
           <div key={label} style={{textAlign:"center"}}>
-            <div style={{fontSize:8,letterSpacing:1,color:"#8a8268",textTransform:"uppercase",marginBottom:3}}>{label}</div>
+            <div style={{fontSize:8,letterSpacing:1,color:"#5f5a44",textTransform:"uppercase",marginBottom:3}}>{label}</div>
             <div style={{fontSize:14,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
           </div>
         ))}
       </div>
-      <div style={{borderTop:"1px solid #d4cfba",paddingTop:8,display:"flex",gap:12}}>
+      <div style={{borderTop:"1px solid #a39c80",paddingTop:8,display:"flex",gap:12}}>
         {totales.map(({local,calc,nombre})=>(
           <div key={local.id} style={{flex:1,textAlign:"center"}}>
             <div style={{fontSize:9,color:local.color,marginBottom:2}}>{nombre}</div>
@@ -896,7 +896,7 @@ function ResumenConsolidado() {
 
 function WelcomeScreen({onEntrar}) {
   return(
-    <div style={{minHeight:"100vh",background:"#e8e4d8",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif",padding:"20px"}}>
+    <div style={{minHeight:"100vh",background:"#bdb69c",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif",padding:"20px"}}>
       <div style={{maxWidth:360,width:"100%"}}>
         {/* Logo */}
         <div style={{textAlign:"center",marginBottom:32}}>
@@ -914,7 +914,7 @@ function WelcomeScreen({onEntrar}) {
         </div>
 
         {/* Botón entrar */}
-        <button onClick={onEntrar} style={{width:"100%",background:"#8a6f24",border:"none",color:"#f3efe2",padding:"14px 0",borderRadius:12,fontSize:14,fontWeight:"bold",cursor:"pointer",fontFamily:"Georgia,serif",letterSpacing:1}}>
+        <button onClick={onEntrar} style={{width:"100%",background:"#8a6f24",border:"none",color:"#d1cbb1",padding:"14px 0",borderRadius:12,fontSize:14,fontWeight:"bold",cursor:"pointer",fontFamily:"Georgia,serif",letterSpacing:1}}>
           Entrar →
         </button>
       </div>
@@ -935,11 +935,11 @@ function LoginScreen() {
     setLoading(false);
   }
   return(
-    <div style={{minHeight:"100vh",background:"#e8e4d8",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif"}}>
+    <div style={{minHeight:"100vh",background:"#bdb69c",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif"}}>
       <div style={{background:"#ece0bd",border:"1px solid #c4bda3",borderRadius:16,padding:32,width:320,maxWidth:"90vw"}}>
         <div style={{textAlign:"center",marginBottom:24}}>
           <img src={require("./logo.png")} alt="Logo" style={{height:60,borderRadius:8,objectFit:"contain",marginBottom:12}}/>
-          <div style={{fontSize:10,letterSpacing:3,color:"#8a8268",textTransform:"uppercase"}}>Libro de Caja</div>
+          <div style={{fontSize:10,letterSpacing:3,color:"#5f5a44",textTransform:"uppercase"}}>Libro de Caja</div>
           <div style={{fontSize:18,color:"#2c2a22",marginTop:2}}>Entre Pues</div>
         </div>
         <div style={{marginBottom:10}}>
@@ -951,7 +951,7 @@ function LoginScreen() {
           <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" onKeyDown={e=>e.key==="Enter"&&handleLogin()} style={{...inp,width:"100%",boxSizing:"border-box"}}/>
         </div>
         {error&&<div style={{fontSize:11,color:"#a3392a",marginBottom:12,textAlign:"center"}}>{error}</div>}
-        <button onClick={handleLogin} disabled={loading} style={{width:"100%",background:"#8a6f24",border:"none",color:"#f3efe2",padding:"12px 0",borderRadius:8,fontSize:13,fontWeight:"bold",cursor:"pointer",fontFamily:"Georgia,serif"}}>
+        <button onClick={handleLogin} disabled={loading} style={{width:"100%",background:"#8a6f24",border:"none",color:"#d1cbb1",padding:"12px 0",borderRadius:8,fontSize:13,fontWeight:"bold",cursor:"pointer",fontFamily:"Georgia,serif"}}>
           {loading?"Entrando...":"Entrar"}
         </button>
       </div>
@@ -1040,14 +1040,14 @@ function CajaFuerte() {
         <div>
           <div style={{ fontSize: 10, letterSpacing: 3, color: "#8a6f24", textTransform: "uppercase", marginBottom: 4, fontWeight: "bold" }}>🔒 Caja Fuerte</div>
           <div style={{ fontSize: 28, color: saldoTotal >= 0 ? "#236b46" : "#a3392a", fontWeight: "bold" }}>{formatCurrency(saldoTotal)}</div>
-          <div style={{ fontSize: 10, color: "#8a8268", marginTop: 2 }}>Saldo actual en caja fuerte</div>
+          <div style={{ fontSize: 10, color: "#5f5a44", marginTop: 2 }}>Saldo actual en caja fuerte</div>
         </div>
         <button onClick={() => setEditSaldo(true)} style={{ background: "#d5e8db", border: "1px solid #236b4644", color: "#236b46", padding: "7px 14px", borderRadius: 20, fontSize: 11, cursor: "pointer" }}>✏️ Saldo inicial</button>
       </div>
 
       {/* Editar saldo inicial */}
       {editSaldo && (
-        <div style={{ background: "#f3efe2", border: "1px solid #d4cfba", borderRadius: 10, padding: 14, marginBottom: 14 }}>
+        <div style={{ background: "#d1cbb1", border: "1px solid #a39c80", borderRadius: 10, padding: 14, marginBottom: 14 }}>
           <div style={{ fontSize: 11, color: "#8a6f24", marginBottom: 6, fontWeight: "bold" }}>Saldo inicial en caja fuerte</div>
           <div style={{ display: "flex", gap: 6 }}>
             <input type="number" value={saldoInput} onChange={e => setSaldoInput(e.target.value)} placeholder="0" style={{ ...inp, flex: 1 }} />
@@ -1060,7 +1060,7 @@ function CajaFuerte() {
       {/* Resumen */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
         {[["Saldo Inicial", saldoInicial, "#7a7258"], ["Total Entradas", totalEntradas, "#236b46"], ["Total Salidas", totalSalidas, "#a3392a"]].map(([label, val, color]) => (
-          <div key={label} style={{ background: "#f3efe2", border: `1px solid ${color}44`, borderRadius: 10, padding: "12px 8px", textAlign: "center" }}>
+          <div key={label} style={{ background: "#d1cbb1", border: `1px solid ${color}44`, borderRadius: 10, padding: "12px 8px", textAlign: "center" }}>
             <div style={{ fontSize: 9, color, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4, fontWeight: "bold" }}>{label}</div>
             <div style={{ fontSize: 14, color, fontWeight: "bold" }}>{formatCurrency(val)}</div>
           </div>
@@ -1068,14 +1068,14 @@ function CajaFuerte() {
       </div>
 
       {/* Formulario */}
-      <div style={{ background: "#f3efe2", border: "1px solid #d4cfba", borderRadius: 12, padding: 16, marginBottom: 16 }}>
+      <div style={{ background: "#d1cbb1", border: "1px solid #a39c80", borderRadius: 12, padding: 16, marginBottom: 16 }}>
         <div style={{ fontSize: 10, letterSpacing: 2, color: "#8a6f24", textTransform: "uppercase", marginBottom: 12, fontWeight: "bold" }}>Nuevo Movimiento</div>
 
         {/* Tipo entrada/salida */}
         <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
           {[["entrada", "💰 Entrada", "#236b4633", "#236b46"], ["salida", "💸 Salida", "#a3392a33", "#a3392a"]].map(([t, label, bg, col]) => (
             <button key={t} onClick={() => setForm(f => ({ ...f, tipo: t }))}
-              style={{ flex: 1, padding: "9px 0", borderRadius: 8, border: `1px solid ${form.tipo === t ? col : col+"33"}`, background: form.tipo === t ? bg : "#f0ece0", color: form.tipo === t ? col : col+"66", fontSize: 12, cursor: "pointer", fontWeight: form.tipo === t ? "bold" : "normal" }}>
+              style={{ flex: 1, padding: "9px 0", borderRadius: 8, border: `1px solid ${form.tipo === t ? col : col+"33"}`, background: form.tipo === t ? bg : "#c7c0a6", color: form.tipo === t ? col : col+"66", fontSize: 12, cursor: "pointer", fontWeight: form.tipo === t ? "bold" : "normal" }}>
               {label}
             </button>
           ))}
@@ -1088,7 +1088,7 @@ function CajaFuerte() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
               {MOTIVOS_SALIDA.map(m => (
                 <button key={m} onClick={() => setForm(f => ({ ...f, motivo: m }))}
-                  style={{ padding: "7px 8px", borderRadius: 7, border: `1px solid ${form.motivo === m ? "#a3392a" : "#a3392a33"}`, background: form.motivo === m ? "#a3392a22" : "#f0ece0", color: form.motivo === m ? "#a3392a" : "#a3392a66", fontSize: 10, cursor: "pointer", textAlign: "left" }}>
+                  style={{ padding: "7px 8px", borderRadius: 7, border: `1px solid ${form.motivo === m ? "#a3392a" : "#a3392a33"}`, background: form.motivo === m ? "#a3392a22" : "#c7c0a6", color: form.motivo === m ? "#a3392a" : "#a3392a66", fontSize: 10, cursor: "pointer", textAlign: "left" }}>
                   {m}
                 </button>
               ))}
@@ -1100,7 +1100,7 @@ function CajaFuerte() {
         <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
           {[["local1", nombre1, "#8a6f24"], ["local2", nombre2, "#3a6fa0"]].map(([id, nombre, color]) => (
             <button key={id} onClick={() => setForm(f => ({ ...f, origen: id }))}
-              style={{ flex: 1, padding: "7px 0", borderRadius: 8, border: `1px solid ${form.origen === id ? color : color+"33"}`, background: form.origen === id ? color + "22" : "#f0ece0", color: form.origen === id ? color : color+"66", fontSize: 11, cursor: "pointer", fontWeight: form.origen === id ? "bold" : "normal" }}>
+              style={{ flex: 1, padding: "7px 0", borderRadius: 8, border: `1px solid ${form.origen === id ? color : color+"33"}`, background: form.origen === id ? color + "22" : "#c7c0a6", color: form.origen === id ? color : color+"66", fontSize: 11, cursor: "pointer", fontWeight: form.origen === id ? "bold" : "normal" }}>
               {nombre}
             </button>
           ))}
@@ -1120,12 +1120,12 @@ function CajaFuerte() {
         const color = mov.tipo === "entrada" ? "#236b46" : "#a3392a";
         const localColor = mov.origen === "local1" ? "#8a6f24" : "#3a6fa0";
         return (
-          <div key={mov.id} style={{ background: "#f3efe2", border: `1px solid ${color}33`, borderRadius: 10, padding: "10px 14px", marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div key={mov.id} style={{ background: "#d1cbb1", border: `1px solid ${color}33`, borderRadius: 10, padding: "10px 14px", marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
               <div style={{ width: 8, height: 8, borderRadius: "50%", background: color, flexShrink: 0 }} />
               <div>
-                <div style={{ fontSize: 12, color: "#f3efe2" }}>{mov.descripcion}</div>
-                <div style={{ fontSize: 10, color: "#8a8268" }}>
+                <div style={{ fontSize: 12, color: "#d1cbb1" }}>{mov.descripcion}</div>
+                <div style={{ fontSize: 10, color: "#5f5a44" }}>
                   <span style={{ color: localColor, fontWeight:"bold" }}>{mov.nombreOrigen}</span>
                   {mov.tipo === "salida" && mov.motivo && <span style={{ color: "#a3392a" }}> · {mov.motivo}</span>}
                   <span style={{ color:"#7a7258" }}> · {formatDateShort(mov.fecha)}</span>
@@ -1220,13 +1220,13 @@ function Dashboard({isMobile}) {
         {datosHoy.map(({local,nombre,c,cy})=>{
           const dif = c.totalVentas - cy.totalVentas;
           return(
-            <div key={local.id} style={{background:"#f3efe2",border:`1px solid ${local.color}33`,borderRadius:14,padding:16}}>
+            <div key={local.id} style={{background:"#d1cbb1",border:`1px solid ${local.color}33`,borderRadius:14,padding:16}}>
               <div style={{fontSize:10,color:local.color,letterSpacing:1,marginBottom:8,fontWeight:"bold"}}>{local.emoji} {nombre}</div>
               <div style={{fontSize:24,color:"#2c2a22",fontWeight:"bold",marginBottom:4}}>{formatCurrency(c.totalVentas)}</div>
               <div style={{fontSize:10,color:"#7a7258",marginBottom:8}}>Ventas hoy</div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:8}}>
                 {[["💵",c.ventas,"#236b46"],["💳",c.ventas_tarjeta,"#1f6f9e"],["📱",c.ventas_bizum,"#6a4eb8"],["🔵",c.ventas_sumup,"#a3650f"]].map(([emoji,val,color])=>(
-                  <div key={emoji} style={{textAlign:"center",background:"#e8e4d8",borderRadius:6,padding:"5px 4px"}}>
+                  <div key={emoji} style={{textAlign:"center",background:"#bdb69c",borderRadius:6,padding:"5px 4px"}}>
                     <div style={{fontSize:12}}>{emoji}</div>
                     <div style={{fontSize:10,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
                   </div>
@@ -1243,7 +1243,7 @@ function Dashboard({isMobile}) {
       {/* Total consolidado hoy */}
       <div style={{background:"#ece0bd",border:"1px solid #c4bda3",borderRadius:14,padding:"14px 18px",marginBottom:20}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-          <div style={{fontSize:10,letterSpacing:2,color:"#8a8268",textTransform:"uppercase"}}>Total Ambos Locales · Hoy</div>
+          <div style={{fontSize:10,letterSpacing:2,color:"#5f5a44",textTransform:"uppercase"}}>Total Ambos Locales · Hoy</div>
           <div style={{fontSize:10,color:difAyer>=0?"#236b46":"#a3392a"}}>
             {difAyer>=0?"▲":"▼"} {formatCurrency(Math.abs(difAyer))} vs ayer
           </div>
@@ -1256,7 +1256,7 @@ function Dashboard({isMobile}) {
             ["🔵 SumUp",datosHoy.reduce((s,d)=>s+d.c.ventas_sumup,0),"#a3650f"]
           ].map(([label,val,color])=>(
             <div key={label} style={{textAlign:"center"}}>
-              <div style={{fontSize:9,color:"#8a8268",marginBottom:3}}>{label}</div>
+              <div style={{fontSize:9,color:"#5f5a44",marginBottom:3}}>{label}</div>
               <div style={{fontSize:12,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
           ))}
@@ -1264,17 +1264,17 @@ function Dashboard({isMobile}) {
       </div>
 
       {/* Gráfica semana */}
-      <div style={{background:"#f3efe2",border:"1px solid #d4cfba",borderRadius:14,padding:16,marginBottom:20}}>
-        <div style={{fontSize:10,letterSpacing:2,color:"#8a8268",textTransform:"uppercase",marginBottom:14}}>Ventas últimos 7 días</div>
+      <div style={{background:"#d1cbb1",border:"1px solid #a39c80",borderRadius:14,padding:16,marginBottom:20}}>
+        <div style={{fontSize:10,letterSpacing:2,color:"#5f5a44",textTransform:"uppercase",marginBottom:14}}>Ventas últimos 7 días</div>
         <div style={{display:"flex",alignItems:"flex-end",gap:6,height:100}}>
           {diasSemana.map((d,i)=>(
             <div key={i} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-              <div style={{fontSize:window.innerWidth<768?11:12,color:d.esHoy?"#8a6f24":"#8a8268"}}>{formatCurrencyShort(d.total)}</div>
+              <div style={{fontSize:window.innerWidth<768?11:12,color:d.esHoy?"#8a6f24":"#5f5a44"}}>{formatCurrencyShort(d.total)}</div>
               <div style={{width:"100%",display:"flex",flexDirection:"column",gap:1,flex:1,justifyContent:"flex-end"}}>
                 <div style={{width:"100%",background:"#3a6fa0",borderRadius:"3px 3px 0 0",height:`${(d.local2/maxSemana)*60}px`,minHeight:d.local2>0?3:0}}/>
                 <div style={{width:"100%",background:"#8a6f24",borderRadius:d.local2>0?"0":"3px 3px 0 0",height:`${(d.local1/maxSemana)*60}px`,minHeight:d.local1>0?3:0}}/>
               </div>
-              <div style={{fontSize:window.innerWidth<768?11:12,color:d.esHoy?"#8a6f24":"#8a8268",fontWeight:d.esHoy?"bold":"normal"}}>{d.dia}</div>
+              <div style={{fontSize:window.innerWidth<768?11:12,color:d.esHoy?"#8a6f24":"#5f5a44",fontWeight:d.esHoy?"bold":"normal"}}>{d.dia}</div>
               {d.esHoy&&<div style={{width:4,height:4,borderRadius:"50%",background:"#8a6f24"}}/>}
             </div>
           ))}
@@ -1286,12 +1286,12 @@ function Dashboard({isMobile}) {
       </div>
 
       {/* Mes actual */}
-      <div style={{background:"#f3efe2",border:"1px solid #d4cfba",borderRadius:14,padding:16}}>
-        <div style={{fontSize:window.innerWidth<768?12:13,letterSpacing:2,color:"#8a8268",textTransform:"uppercase",marginBottom:12}}>{MESES[month-1]} {year} · Acumulado</div>
+      <div style={{background:"#d1cbb1",border:"1px solid #a39c80",borderRadius:14,padding:16}}>
+        <div style={{fontSize:window.innerWidth<768?12:13,letterSpacing:2,color:"#5f5a44",textTransform:"uppercase",marginBottom:12}}>{MESES[month-1]} {year} · Acumulado</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}>
           {[[nombre1,ingL1,"#8a6f24"],[nombre2,ingL2,"#3a6fa0"],["Total",ingL1+ingL2,"#2c2a22"]].map(([nombre,val,color])=>(
             <div key={nombre} style={{textAlign:"center"}}>
-              <div style={{fontSize:9,color:"#8a8268",marginBottom:4}}>{nombre}</div>
+              <div style={{fontSize:9,color:"#5f5a44",marginBottom:4}}>{nombre}</div>
               <div style={{fontSize:15,color,fontWeight:"bold"}}>{formatCurrency(val)}</div>
             </div>
           ))}
@@ -1318,8 +1318,8 @@ export default function App() {
     return()=>unsub();
   },[]);
   if(checkingAuth) return(
-    <div style={{minHeight:"100vh",background:"#e8e4d8",display:"flex",alignItems:"center",justifyContent:"center"}}>
-      <div style={{color:"#8a8268",fontFamily:"Georgia,serif",fontSize:13,letterSpacing:2}}>Cargando...</div>
+    <div style={{minHeight:"100vh",background:"#bdb69c",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div style={{color:"#5f5a44",fontFamily:"Georgia,serif",fontSize:13,letterSpacing:2}}>Cargando...</div>
     </div>
   );
   if(!user && showWelcome) return <WelcomeScreen onEntrar={()=>setShowWelcome(false)}/>;
@@ -1331,11 +1331,11 @@ export default function App() {
 
   // Empleado logueado pero sin local asignado en EMPLEADOS_LOCAL
   if(!admin && misLocales.length===0) return (
-    <div style={{minHeight:"100vh",background:"#e8e4d8",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif",padding:20,textAlign:"center"}}>
+    <div style={{minHeight:"100vh",background:"#bdb69c",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Georgia,serif",padding:20,textAlign:"center"}}>
       <div style={{background:"#ece0bd",border:"1px solid #c4bda3",borderRadius:16,padding:32,maxWidth:340}}>
         <div style={{fontSize:14,color:"#2c2a22",marginBottom:10}}>Tu cuenta no tiene un local asignado</div>
         <div style={{fontSize:12,color:"#7a7258",marginBottom:20}}>Contacta con el administrador para que la vincule a un local.</div>
-        <button onClick={()=>signOut(auth)} style={{background:"transparent",border:"1px solid #c4bda3",color:"#8a8268",padding:"8px 16px",borderRadius:20,fontSize:11,cursor:"pointer",fontFamily:"Georgia,serif"}}>Salir</button>
+        <button onClick={()=>signOut(auth)} style={{background:"transparent",border:"1px solid #c4bda3",color:"#5f5a44",padding:"8px 16px",borderRadius:20,fontSize:11,cursor:"pointer",fontFamily:"Georgia,serif"}}>Salir</button>
       </div>
     </div>
   );
@@ -1345,25 +1345,25 @@ export default function App() {
     : [["caja","💼 Caja"]];
 
   return(
-    <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#e8e4d8",color:"#2c2a22",padding:"0 0 60px"}}>
-      <div style={{background:"#f0ece0",borderBottom:"1px solid #d4cfba",padding:isMobile?"10px 14px":"10px 32px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+    <div style={{fontFamily:"'Georgia', serif",minHeight:"100vh",background:"#bdb69c",color:"#2c2a22",padding:"0 0 60px"}}>
+      <div style={{background:"#c7c0a6",borderBottom:"1px solid #a39c80",padding:isMobile?"10px 14px":"10px 32px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <img src={require("./logo.png")} alt="Logo" style={{height:48,borderRadius:6,objectFit:"contain"}}/>
           <div>
-            <div style={{fontSize:9,letterSpacing:3,color:"#8a8268",textTransform:"uppercase"}}>Libro de Caja</div>
+            <div style={{fontSize:9,letterSpacing:3,color:"#5f5a44",textTransform:"uppercase"}}>Libro de Caja</div>
             <div style={{fontSize:16,color:"#2c2a22"}}>Entre Pues{!admin&&misLocales[0]?` · ${localStorage.getItem(`nombre_${misLocales[0].id}`)||misLocales[0].nombre}`:""}</div>
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           {admin&&<button onClick={exportarExcel} style={{background:"#d5e8db",border:"1px solid #93c2a3",color:"#236b46",padding:"6px 12px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>📊 Excel</button>}
-          <button onClick={()=>signOut(auth)} style={{background:"transparent",border:"1px solid #c4bda3",color:"#8a8268",padding:"6px 10px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>Salir</button>
-          <div style={{fontSize:10,color:"#8a8268"}}>{new Date().toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}</div>
+          <button onClick={()=>signOut(auth)} style={{background:"transparent",border:"1px solid #c4bda3",color:"#5f5a44",padding:"6px 10px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>Salir</button>
+          <div style={{fontSize:10,color:"#5f5a44"}}>{new Date().toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}</div>
         </div>
       </div>
-      {tabsDisponibles.length>1&&<div style={{display:"flex",borderBottom:"1px solid #d4cfba",background:"#f3efe2"}}>
+      {tabsDisponibles.length>1&&<div style={{display:"flex",borderBottom:"1px solid #a39c80",background:"#d1cbb1"}}>
         {tabsDisponibles.map(([k,label])=>(
           <button key={k} onClick={()=>setMainTab(k)}
-            style={{flex:1,padding:"11px 0",background:"transparent",border:"none",borderBottom:mainTab===k?"2px solid #8a6f24":"2px solid transparent",color:mainTab===k?"#8a6f24":"#8a8268",fontSize:10,cursor:"pointer",letterSpacing:1}}>
+            style={{flex:1,padding:"11px 0",background:"transparent",border:"none",borderBottom:mainTab===k?"2px solid #8a6f24":"2px solid transparent",color:mainTab===k?"#8a6f24":"#5f5a44",fontSize:10,cursor:"pointer",letterSpacing:1}}>
             {label}
           </button>
         ))}
@@ -1388,6 +1388,6 @@ export default function App() {
   );
 }
 
-const inp={background:"#f0ece0",border:"1px solid #d4cfba",borderRadius:7,padding:"9px 11px",color:"#2c2a22",fontSize:12,outline:"none",fontFamily:"Georgia,serif"};
-const btnPri={border:"none",color:"#f3efe2",padding:"9px 16px",borderRadius:7,fontSize:12,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"};
+const inp={background:"#c7c0a6",border:"1px solid #a39c80",borderRadius:7,padding:"9px 11px",color:"#2c2a22",fontSize:12,outline:"none",fontFamily:"Georgia,serif"};
+const btnPri={border:"none",color:"#d1cbb1",padding:"9px 16px",borderRadius:7,fontSize:12,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"};
 const btnSec={background:"transparent",border:"1px solid #c4bda3",color:"#7a7258",padding:"9px 12px",borderRadius:7,fontSize:12,cursor:"pointer",whiteSpace:"nowrap"};
