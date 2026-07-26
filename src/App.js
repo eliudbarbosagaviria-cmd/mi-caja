@@ -776,21 +776,21 @@ function CajaLocal({local, user}) {
           <div style={{background:"#d3cdb9",border:"1px solid #d4cfba",borderRadius:10,padding:14,marginBottom:12}}>
             {!isToday&&<div style={{fontSize:10,color:"#8a6f24",marginBottom:8}}>⚠ Registrando en día pasado: {formatDateShort(viewDate)}</div>}
             {/* Ventas por método de pago */}
-            <div style={{fontSize:9,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",marginBottom:6,fontWeight:"bold"}}>Ventas</div>
+            <div style={{fontSize:window.innerWidth<768?10:11,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",marginBottom:6,fontWeight:"bold"}}>Ventas</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:8}}>
               {[["venta","💵 Efectivo","#236b46"],["venta_tarjeta","💳 Tarjeta","#1f6f9e"],["venta_bizum","📱 Bizum","#6a4eb8"],["venta_sumup","🔵 SumUp","#a3650f"]].map(([tipo,label,color])=>(
                 <button key={tipo} onClick={()=>setForm(f=>({...f,tipo,categoria:CATS[tipo][0]}))}
-                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#e7e1cf",color:form.tipo===tipo?color:color+"88",fontSize:10,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
+                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#e7e1cf",color:form.tipo===tipo?color:color+"88",fontSize:window.innerWidth<768?11:13,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
                   {label}
                 </button>
               ))}
             </div>
             {/* Otros movimientos */}
-            <div style={{fontSize:9,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",marginBottom:6,fontWeight:"bold"}}>Otros</div>
+            <div style={{fontSize:window.innerWidth<768?10:11,color:"#8a6f24",letterSpacing:2,textTransform:"uppercase",marginBottom:6,fontWeight:"bold"}}>Otros</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:5,marginBottom:10}}>
               {[["deposito","🏦 Depósito","#1f7a8a"],["gasto","🧾 Gasto","#a3392a"],["retiro","💸 Retiro","#a3621f"]].map(([tipo,label,color])=>(
                 <button key={tipo} onClick={()=>setForm(f=>({...f,tipo,categoria:CATS[tipo][0]}))}
-                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#e7e1cf",color:form.tipo===tipo?color:color+"88",fontSize:10,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
+                  style={{padding:"8px 4px",borderRadius:7,border:`1px solid ${form.tipo===tipo?color:color+"33"}`,background:form.tipo===tipo?color+"33":"#e7e1cf",color:form.tipo===tipo?color:color+"88",fontSize:window.innerWidth<768?11:13,cursor:"pointer",textAlign:"center",fontWeight:form.tipo===tipo?"bold":"normal"}}>
                   {label}
                 </button>
               ))}
