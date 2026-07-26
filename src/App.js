@@ -184,11 +184,12 @@ function calcDay(data) {
   return { ventas, ventas_tarjeta, ventas_bizum, ventas_sumup, totalVentas, depositos, gastos, retiros, cajaTeor, cajaReal, diferencia };
 }
 
-function exportarExcel() {
+function exportarExcel(desde,hasta) {
+  const enRango=dk=>(!desde||dk>=desde)&&(!hasta||dk<=hasta);
   const wb=XLSX.utils.book_new();
   LOCALES.forEach(local=>{
     const nombre=localStorage.getItem(`nombre_${local.id}`)||local.nombre;
-    const keys=getAllKeys(local.id).sort();
+    const keys=getAllKeys(local.id).filter(enRango).sort();
     const rows=[];
     keys.forEach(dk=>{
       const d=loadDay(local.id,dk); const c=calcDay(d);
@@ -196,12 +197,12 @@ function exportarExcel() {
       d.movimientos.forEach(m=>rows.push({ Fecha:formatDate(dk),Semana:`S${getWeekNumber(dk)}`,Tipo:TIPOS_MOV[m.tipo]?.label||m.tipo,Ventas:m.tipo==="venta"?m.monto:"",Depósitos:m.tipo==="deposito"?m.monto:"",Gastos:m.tipo==="gasto"?m.monto:"",Retiros:m.tipo==="retiro"?m.monto:"","Base de caja":"","Caja Teórica":"","Caja Real":"",Diferencia:"",Estado:"",Nota:m.descripcion}));
       rows.push({});
     });
-    if(!rows.length) rows.push({Fecha:"Sin datos"});
+    if(!rows.length) rows.push({Fecha:"Sin datos en el rango"});
     const ws=XLSX.utils.json_to_sheet(rows);
     ws["!cols"]=[{wch:32},{wch:8},{wch:18},{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:12},{wch:10},{wch:10},{wch:28}];
     XLSX.utils.book_append_sheet(wb,ws,nombre.slice(0,31));
   });
-  const allDates=[...new Set(getAllKeys("local1").concat(getAllKeys("local2")))].sort();
+  const allDates=[...new Set(getAllKeys("local1").concat(getAllKeys("local2")))].filter(enRango).sort();
   const cRows=[];
   allDates.forEach(dk=>{
     LOCALES.forEach(local=>{
@@ -211,7 +212,8 @@ function exportarExcel() {
     });
   });
   if(cRows.length){const ws=XLSX.utils.json_to_sheet(cRows);XLSX.utils.book_append_sheet(wb,ws,"Consolidado");}
-  XLSX.writeFile(wb,`caja_${getDateKey()}.xlsx`);
+  const sufijoRango=desde||hasta?`_${desde||"inicio"}_a_${hasta||"hoy"}`:"";
+  XLSX.writeFile(wb,`caja_${getDateKey()}${sufijoRango}.xlsx`);
 }
 
 function LocalNameEditor({local,onSave}) {
@@ -1307,6 +1309,9 @@ export default function App() {
   const [checkingAuth,setCheckingAuth]=useState(true);
   const [showWelcome,setShowWelcome]=useState(true);
   const [isMobile,setIsMobile]=useState(window.innerWidth < 768);
+  const [showExport,setShowExport]=useState(false);
+  const [fechaDesde,setFechaDesde]=useState("");
+  const [fechaHasta,setFechaHasta]=useState("");
 
   useEffect(()=>{
     const handleResize=()=>setIsMobile(window.innerWidth < 768);
@@ -1355,7 +1360,7 @@ export default function App() {
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
-          {admin&&<button onClick={exportarExcel} style={{background:"#d5e8db",border:"1px solid #93c2a3",color:"#236b46",padding:"6px 12px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>📊 Excel</button>}
+          {admin&&<button onClick={()=>setShowExport(true)} style={{background:"#d5e8db",border:"1px solid #93c2a3",color:"#236b46",padding:"6px 12px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>📊 Excel</button>}
           <button onClick={()=>signOut(auth)} style={{background:"transparent",border:"1px solid #c4bda3",color:"#8a8268",padding:"6px 10px",borderRadius:20,fontSize:10,cursor:"pointer",fontFamily:"Georgia,serif"}}>Salir</button>
           <div style={{fontSize:10,color:"#8a8268"}}>{new Date().toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}</div>
         </div>
@@ -1384,6 +1389,27 @@ export default function App() {
           <span style={{fontSize:window.innerWidth<768?11:12,color:"#a3392a"}}>● Descuadre</span>
         </div>
       </div>
+      {showExport&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200}}>
+          <div style={{background:"#ece0bd",border:"1px solid #c4bda3",borderRadius:14,padding:24,width:320,maxWidth:"90vw",fontFamily:"Georgia,serif"}}>
+            <div style={{fontSize:14,color:"#2c2a22",marginBottom:14}}>📊 Exportar a Excel</div>
+            <div style={{marginBottom:10}}>
+              <div style={{fontSize:10,color:"#7a7258",marginBottom:4,letterSpacing:1}}>DESDE (opcional)</div>
+              <input type="date" value={fechaDesde} onChange={e=>setFechaDesde(e.target.value)} style={{...inp,width:"100%",boxSizing:"border-box"}}/>
+            </div>
+            <div style={{marginBottom:16}}>
+              <div style={{fontSize:10,color:"#7a7258",marginBottom:4,letterSpacing:1}}>HASTA (opcional)</div>
+              <input type="date" value={fechaHasta} onChange={e=>setFechaHasta(e.target.value)} style={{...inp,width:"100%",boxSizing:"border-box"}}/>
+            </div>
+            <div style={{fontSize:10,color:"#7a7258",marginBottom:16}}>Deja ambos campos vacíos para exportar todo el historial.</div>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>{exportarExcel(fechaDesde||null,fechaHasta||null);setShowExport(false);setFechaDesde("");setFechaHasta("");}}
+                style={{...btnPri,background:"#236b46",flex:1}}>Exportar</button>
+              <button onClick={()=>{setShowExport(false);setFechaDesde("");setFechaHasta("");}} style={btnSec}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
