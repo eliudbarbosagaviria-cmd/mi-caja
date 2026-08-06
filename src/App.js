@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import * as XLSX from "xlsx";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, setDoc, onSnapshot, collection } from "firebase/firestore";
+import { getFirestore, doc, setDoc, onSnapshot, collection, arrayUnion } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 
 // ─────────────────────────────────────────────
@@ -82,7 +82,7 @@ const CATS = {
   venta_sumup:   ["Ventas mostrador","Ventas delivery","Otros ingresos"],
   deposito: ["Depósito bancario","Cobro cliente","Transferencia recibida"],
   gasto:    ["Proveedores","Salarios","Alquiler","Servicios","Transporte","Otros gastos"],
-  retiro:   ["Retiro propietario","Pago anticipado","Otros retiros"],
+  retiro:   ["Retiro propietario","Pago anticipado","Otros retiros","🔒 Caja fuerte"],
 };
 
 const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
@@ -689,6 +689,21 @@ function CajaLocal({local, user}) {
     if(!form.monto||isNaN(+form.monto)||+form.monto<=0) return;
     const mov={id:Date.now(),tipo:form.tipo,categoria:form.categoria,descripcion:form.descripcion.trim()||form.categoria,monto:+form.monto,hora:new Date().toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"})};
     persist({...dayData,movimientos:[...dayData.movimientos,mov]});
+    if(form.tipo==="retiro"&&form.categoria==="🔒 Caja fuerte"){
+      const nombreLocal=localStorage.getItem(`nombre_${local.id}`)||local.nombre;
+      const entradaFuerte={
+        id:Date.now()+1,
+        tipo:"entrada",
+        origen:local.id,
+        nombreOrigen:nombreLocal,
+        motivo:"",
+        descripcion:form.descripcion.trim()||`Retiro de ${nombreLocal} para caja fuerte`,
+        monto:+form.monto,
+        fecha:viewDate,
+        hora:new Date().toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"})
+      };
+      setDoc(doc(db,"cajaFuerte","datos"),{movimientos:arrayUnion(entradaFuerte)},{merge:true});
+    }
     setForm(f=>({...f,descripcion:"",monto:""}));
     showFlash(`✓ ${TIPOS_MOV[form.tipo].label} registrado`);
     setTimeout(()=>inputRef.current?.focus(),50);
